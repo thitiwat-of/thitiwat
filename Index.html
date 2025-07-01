@@ -41,104 +41,116 @@
             if(d) {
                 e[a]=e.moe(d); 
                 e[a].initialised=e[a].initialised+1||1;
+
+                // --- MoEngage Initialization with Cards Enabled (MOVED HERE) ---
+                // This block now executes ONLY after the SDK script is loaded.
+                Moengage = moe({
+                    app_id: moeAppID, // Use the variable defined above
+                    debug_logs: 1, // Set to 1 to see debug messages in console
+                    cards: {
+                        enable: true, // Crucial for enabling the Cards module
+                        // The following configurations are primarily for MoEngage's pre-built inbox UI.
+                        // If you are building a custom UI (as in this example), these will not directly apply
+                        // unless you explicitly use them in your custom rendering logic.
+                        // They are kept here as they were in your original snippet.
+                        placeholder: "#cardIcon", 
+                        backgroundColor: "#F6FBFC", 
+                        overLayColor: "rgba(0, 0, 0, 0.8)",
+                        fontFaces: [{
+                            family: "Sofia",
+                            url: "https://fonts.gstatic.com/s/sofia/v14/8QIHdirahM3j_su5uI0Orbjl.woff2"
+                        }, {
+                            family: "Audiowide",
+                            url: "https://fonts.gstatic.com/s/audiowide/v16/l7gdbjpo0cum0ckerWCdlg_OMRlABg.woff2"
+                        }],
+                        cardDismiss: {
+                            color: "#db2828", 
+                            enable: false 
+                        },
+                        optionButtonColor: "#C4C4C4", 
+                        dateTimeColor: "#8E8E8E", 
+                        unclickedCardIndicatorColor: "blue", 
+                        pinIcon: "https://app-cdn.moengage.com/sdk/pin-icon.svg", 
+                        refreshIcon: "https://app-cdn.moengage.com/sdk/refresh-icon.svg", 
+                        navigationBar: {
+                            backgroundColor: "#00237C", 
+                            text: "Notifications", 
+                            color: "#fff", 
+                            fontSize: "16px", 
+                            fontFamily: ""
+                        },
+                        closeButton: {
+                            webIcon: "https://app-cdn.moengage.com/sdk/cross-icon.svg",
+                            mWebIcon: "https://app-cdn.moengage.com/sdk/cross-icon.svg",
+                        },
+                        tab: {
+                            active: {
+                                color: "#06A6B7",
+                                underlineColor: "#06A6B7",
+                                backgroundColor: "transparent"
+                            },
+                            inactiveTabFontColor: "#7C7C7C",
+                            fontSize: "14px", 
+                            fontFamily: "", 
+                            backgroundColor: "#fff", 
+                        },
+                        webFloating: {
+                            enable: false, 
+                            icon: "https://app-cdn.moengage.com/sdk/bell-icon.svg", 
+                            postion: "0px 10px 40px 0", 
+                            countBackgroundColor: "#FF5A5F",
+                            countColor: "#fff",
+                            iconBackgroundColor: "#D9DFED",
+                            fontFamily: "Audiowide"
+                        },
+                        mWebFloating: {
+                            enable: false, 
+                            icon: "https://app-cdn.moengage.com/sdk/bell-icon.svg", 
+                            postion: "0px 10px 40px 0", 
+                            countBackgroundColor: "#FF5A5F",
+                            countColor: "#fff",
+                            iconBackgroundColor: "#D9DFED",
+                            fontFamily: "Audiowide"
+                        },
+                        card: {
+                            headerFontSize: "16px",
+                            descriptionFontSize: "14px",
+                            ctaFontSize: "12px",
+                            fontFamily: "inherit",
+                            horizontalRowColor: "#D9DFED"
+                        },
+                        noDataContent: {
+                            img: "https://app-cdn.moengage.com/sdk/cards-no-result.svg",
+                            text: "No notifications to show, check again later.",
+                        }
+                    }
+                });
+
+                // --- IMPORTANT: User Identification (MOVED HERE) ---
+                // Replace "YOUR_UNIQUE_USER_ID" with an actual unique ID for the logged-in user.
+                // This is crucial for MoEngage to fetch personalized cards for this user.
+                // Example: If a user logs in, identify them with their internal user ID.
+                Moengage.add_unique_user_id("Aoftest"); 
+                // You can also add other user attributes if available, e.g.:
+                // Moengage.add_email("test.user@example.com");
+                // Moengage.add_first_name("Test");
+                // Moengage.add_last_name("User");
+
+                // --- Call MoEngage Cards functions here (MOVED HERE) ---
+                // These calls are now guaranteed to execute after Moengage and its 'cards' module are ready.
+                if (typeof Moengage !== 'undefined' && Moengage.cards) {
+                    Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
+                    fetchAndRenderCards(); // Proceed to fetch and render cards
+                } else {
+                    console.error("MoEngage.cards module still not available after SDK load. This is unexpected. Please check MoEngage SDK version or contact support.");
+                    // Ensure messages are shown even if this unexpected error occurs
+                    document.getElementById('loading-message').classList.add('hidden');
+                    document.getElementById('error-message').classList.remove('hidden');
+                }
+                return !0
             }
         }),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/moe_webSdk.min.latest.js","Moengage");
         
-        // --- MoEngage Initialization with Cards Enabled ---
-        // This block executes immediately after the SDK loader snippet.
-        // It configures the MoEngage instance.
-        Moengage = moe({
-            app_id: moeAppID, // Use the variable defined above
-            debug_logs: 1, // Set to 1 to see debug messages in console
-            cards: {
-                enable: true, // Crucial for enabling the Cards module
-                // The following configurations are primarily for MoEngage's pre-built inbox UI.
-                // If you are building a custom UI (as in this example), these will not directly apply
-                // unless you explicitly use them in your custom rendering logic.
-                // They are kept here as they were in your original snippet.
-                placeholder: "#cardIcon", 
-                backgroundColor: "#F6FBFC", 
-                overLayColor: "rgba(0, 0, 0, 0.8)",
-                fontFaces: [{
-                    family: "Sofia",
-                    url: "https://fonts.gstatic.com/s/sofia/v14/8QIHdirahM3j_su5uI0Orbjl.woff2"
-                }, {
-                    family: "Audiowide",
-                    url: "https://fonts.gstatic.com/s/audiowide/v16/l7gdbjpo0cum0ckerWCdlg_OMRlABg.woff2"
-                }],
-                cardDismiss: {
-                    color: "#db2828", 
-                    enable: false 
-                },
-                optionButtonColor: "#C4C4C4", 
-                dateTimeColor: "#8E8E8E", 
-                unclickedCardIndicatorColor: "blue", 
-                pinIcon: "https://app-cdn.moengage.com/sdk/pin-icon.svg", 
-                refreshIcon: "https://app-cdn.moengage.com/sdk/refresh-icon.svg", 
-                navigationBar: {
-                    backgroundColor: "#00237C", 
-                    text: "Notifications", 
-                    color: "#fff", 
-                    fontSize: "16px", 
-                    fontFamily: ""
-                },
-                closeButton: {
-                    webIcon: "https://app-cdn.moengage.com/sdk/cross-icon.svg",
-                    mWebIcon: "https://app-cdn.moengage.com/sdk/cross-icon.svg",
-                },
-                tab: {
-                    active: {
-                        color: "#06A6B7",
-                        underlineColor: "#06A6B7",
-                        backgroundColor: "transparent"
-                    },
-                    inactiveTabFontColor: "#7C7C7C",
-                    fontSize: "14px", 
-                    fontFamily: "", 
-                    backgroundColor: "#fff", 
-                },
-                webFloating: {
-                    enable: false, 
-                    icon: "https://app-cdn.moengage.com/sdk/bell-icon.svg", 
-                    postion: "0px 10px 40px 0", 
-                    countBackgroundColor: "#FF5A5F",
-                    countColor: "#fff",
-                    iconBackgroundColor: "#D9DFED",
-                    fontFamily: "Audiowide"
-                },
-                mWebFloating: {
-                    enable: false, 
-                    icon: "https://app-cdn.moengage.com/sdk/bell-icon.svg", 
-                    postion: "0px 10px 40px 0", 
-                    countBackgroundColor: "#FF5A5F",
-                    countColor: "#fff",
-                    iconBackgroundColor: "#D9DFED",
-                    fontFamily: "Audiowide"
-                },
-                card: {
-                    headerFontSize: "16px",
-                    descriptionFontSize: "14px",
-                    ctaFontSize: "12px",
-                    fontFamily: "inherit",
-                    horizontalRowColor: "#D9DFED"
-                },
-                noDataContent: {
-                    img: "https://app-cdn.moengage.com/sdk/cards-no-result.svg",
-                    text: "No notifications to show, check again later.",
-                }
-            }
-        });
-
-        // --- IMPORTANT: User Identification ---
-        // Replace "YOUR_UNIQUE_USER_ID" with an actual unique ID for the logged-in user.
-        // This is crucial for MoEngage to fetch personalized cards for this user.
-        // Example: If a user logs in, identify them with their internal user ID.
-        Moengage.add_unique_user_id("Aoftest"); 
-        // You can also add other user attributes if available, e.g.:
-        // Moengage.add_email("test.user@example.com");
-        // Moengage.add_first_name("Test");
-        // Moengage.add_last_name("User");
-
     </script>
 </head>
 <body class="h-screen flex flex-col">
@@ -400,19 +412,17 @@
         // --- Main execution block ---
         // This ensures the DOM is fully loaded before attempting to interact with elements.
         document.addEventListener("DOMContentLoaded", function() {
-            // Use a small delay to ensure MoEngage object is fully ready after its script's load event.
-            // This can sometimes help with timing issues, especially in various browser environments.
-            setTimeout(() => {
-                // Check if Moengage object and its 'cards' module are available
-                if (typeof Moengage !== 'undefined' && Moengage.cards) {
-                    Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
-                    fetchAndRenderCards(); // Proceed to fetch and render cards
-                } else {
-                    console.error("MoEngage SDK or 'cards' module not fully initialized. Please ensure the SDK script loaded successfully and 'cards: { enable: true }' is set in the initialization config. Also verify App ID, Data Center, and Domain Whitelisting in MoEngage dashboard.");
-                    document.getElementById('loading-message').classList.add('hidden');
-                    document.getElementById('error-message').classList.remove('hidden');
-                }
-            }, 500); // 500ms delay to allow SDK to fully settle
+            // Check if Moengage object and its 'cards' module are available
+            // This check is crucial to prevent "Cannot read properties of undefined (reading 'inboxOpened')"
+            // It waits for the SDK to be fully initialized.
+            if (typeof Moengage !== 'undefined' && Moengage.cards) {
+                Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
+                fetchAndRenderCards(); // Proceed to fetch and render cards
+            } else {
+                console.error("MoEngage SDK or 'cards' module not fully initialized. Please ensure the SDK script loaded successfully and 'cards: { enable: true }' is set in the initialization config. Also verify App ID, Data Center, and Domain Whitelisting in MoEngage dashboard.");
+                document.getElementById('loading-message').classList.add('hidden');
+                document.getElementById('error-message').classList.remove('hidden');
+            }
         });
     </script>
 </body>
