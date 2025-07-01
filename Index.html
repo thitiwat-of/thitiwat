@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Inbox</title>
+    <title>MoEngage Notification Inbox</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
@@ -12,17 +12,6 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f4f7f6;
-        }
-        /* Custom scrollbar for sidebar */
-        .sidebar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background-color: #cbd5e0; /* lightgray-400 */
-            border-radius: 4px;
-        }
-        .sidebar::-webkit-scrollbar-track {
-            background-color: #e2e8f0; /* lightgray-200 */
         }
         /* Custom scrollbar for main content area */
         .main-content-scroll::-webkit-scrollbar {
@@ -36,17 +25,19 @@
             background-color: #e2e8f0; /* lightgray-200 */
         }
     </style>
+
     <!-- MoEngage Web SDK Snippet -->
     <script id="moengage">
-        var moeDataCenter = "dc_1"; // Replace "DC" with your actual Data center value (e.g., "dc_1", "dc_2", etc.)
-        var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // Replace "AppID" with your actual MoEngage Dashboard App ID.
+        var moeDataCenter = "dc_1"; // IMPORTANT: Replace with your actual Data center value (e.g., "dc_1", "dc_2", etc.)
+        var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // IMPORTANT: Replace with your actual MoEngage Dashboard App ID.
 
-        // IMPORTANT: Double-check your moeAppID and moeDataCenter in your MoEngage dashboard.
-        // An incorrect App ID or Data Center, or if the Web SDK is not enabled for this App ID,
-        // will cause initialization errors like "App is blocked."
+        // Console warning to remind about critical setup steps
         console.warn("MoEngage Setup: Please ensure moeAppID ('" + moeAppID + "') and moeDataCenter ('" + moeDataCenter + "') are correct and the Web SDK is enabled for this App ID in your MoEngage dashboard, including domain whitelisting.");
 
+        // MoEngage SDK Loader Snippet
         !function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){
+            // This 'load' event listener ensures the SDK script has been downloaded and executed.
+            // It's the ideal place to call the 'moe' function to initialize MoEngage.
             if(d) {
                 e[a]=e.moe(d); 
                 e[a].initialised=e[a].initialised+1||1;
@@ -54,16 +45,17 @@
         }),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/moe_webSdk.min.latest.js","Moengage");
         
         // --- MoEngage Initialization with Cards Enabled ---
-        // This block should run AFTER the SDK snippet above has loaded and defined 'moe'.
-        // Placing it here ensures that 'moe' is available to configure 'Moengage'.
+        // This block executes immediately after the SDK loader snippet.
+        // It configures the MoEngage instance.
         Moengage = moe({
-            app_id: moeAppID, // Use the variable here
+            app_id: moeAppID, // Use the variable defined above
             debug_logs: 1, // Set to 1 to see debug messages in console
             cards: {
                 enable: true, // Crucial for enabling the Cards module
                 // The following configurations are primarily for MoEngage's pre-built inbox UI.
-                // If you are building a custom UI, these will not directly apply unless you
-                // explicitly use them in your rendering logic.
+                // If you are building a custom UI (as in this example), these will not directly apply
+                // unless you explicitly use them in your custom rendering logic.
+                // They are kept here as they were in your original snippet.
                 placeholder: "#cardIcon", 
                 backgroundColor: "#F6FBFC", 
                 overLayColor: "rgba(0, 0, 0, 0.8)",
@@ -141,7 +133,7 @@
         // Replace "YOUR_UNIQUE_USER_ID" with an actual unique ID for the logged-in user.
         // This is crucial for MoEngage to fetch personalized cards for this user.
         // Example: If a user logs in, identify them with their internal user ID.
-        Moengage.add_unique_user_id("Aoftest"); 
+        Moengage.add_unique_user_id("user_test_001"); 
         // You can also add other user attributes if available, e.g.:
         // Moengage.add_email("test.user@example.com");
         // Moengage.add_first_name("Test");
@@ -155,7 +147,7 @@
     <header class="bg-white shadow-sm p-4 flex items-center justify-between rounded-b-lg">
         <h1 class="text-2xl font-bold text-gray-800">Inbox</h1>
         <div class="relative w-1/3">
-            <input type="text" placeholder="Search emails..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <input type="text" placeholder="Search notifications..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
             <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </div>
         <div class="flex items-center space-x-4">
@@ -230,12 +222,13 @@
             </div>
         </aside>
 
-        <!-- Email List -->
+        <!-- Main Content Area for Cards -->
         <main class="flex-1 p-6 overflow-y-auto bg-gray-100 main-content-scroll">
             <div class="bg-white shadow rounded-lg p-4 mb-4 flex items-center justify-between">
                 <h2 class="text-xl font-semibold text-gray-800">All Messages</h2>
                 <div class="flex items-center space-x-2 text-gray-600">
-                    <span>1-10 of <span id="total-cards-count">0</span></span>
+                    <span>Showing <span id="current-cards-count">0</span> of <span id="total-cards-count">0</span></span>
+                    <!-- Pagination buttons (optional, implement logic if needed) -->
                     <button class="p-1 rounded-full hover:bg-gray-200">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
                     </button>
@@ -247,9 +240,9 @@
 
             <!-- MoEngage Cards will be dynamically inserted here -->
             <div id="moengage-cards-container" class="space-y-3">
-                <p id="loading-message" class="text-center text-gray-500">Loading notifications...</p>
-                <p id="no-cards-message" class="text-center text-gray-500 hidden">No new notifications.</p>
-                <p id="error-message" class="text-center text-red-500 hidden">Error loading notifications. Please check your MoEngage setup.</p>
+                <p id="loading-message" class="text-center text-gray-500 py-8">Loading notifications...</p>
+                <p id="no-cards-message" class="text-center text-gray-500 hidden py-8">No new notifications.</p>
+                <p id="error-message" class="text-center text-red-500 hidden py-8">Error loading notifications. Please check your MoEngage setup and network connection.</p>
             </div>
         </main>
     </div>
@@ -262,8 +255,9 @@
             const noCardsMessage = document.getElementById('no-cards-message');
             const errorMessage = document.getElementById('error-message');
             const totalCardsCountSpan = document.getElementById('total-cards-count');
+            const currentCardsCountSpan = document.getElementById('current-cards-count');
 
-            // Hide all messages initially
+            // Show loading message, hide others
             loadingMessage.classList.remove('hidden');
             noCardsMessage.classList.add('hidden');
             errorMessage.classList.add('hidden');
@@ -272,26 +266,26 @@
             // Function to render a single card
             function renderCard(card) {
                 const cardElement = document.createElement('div');
-                // Determine border color based on read status or card type
-                const borderColor = card.isClicked ? 'border-gray-300' : 'border-blue-500'; // Assuming 'isClicked' indicates read status
+                // Determine border color based on 'isClicked' property (MoEngage's way to indicate read status)
+                const borderColor = card.isClicked ? 'border-gray-300' : 'border-blue-500'; 
                 
                 cardElement.className = `bg-white rounded-lg shadow-sm p-4 flex items-start space-x-4 border-l-4 ${borderColor} cursor-pointer hover:shadow-md`;
                 cardElement.dataset.cardId = card.cardId; // Store cardId for tracking
 
+                // Extract content from the card payload
                 let imageUrl = card.content.body.imageUrl || '';
                 let title = card.content.body.title || 'No Title';
                 let message = card.content.body.message || 'No message content.';
                 let ctaButtonsHtml = '';
 
-                // Check for CTA (Call to Action) if available
+                // Iterate through CTAs if available, as per MoEngage documentation
                 if (card.content.body.hasOwnProperty('cta') && Array.isArray(card.content.body.cta)) {
                     card.content.body.cta.forEach((cta, index) => {
                         const ctaText = cta.text || 'View Details';
-                        const ctaAction = cta.action || '#';
-                        const ctaValue = cta.value || '';
-                        const ctaId = cta.id || `cta-${index}`; // Use CTA ID if available, otherwise index
+                        const ctaAction = cta.action || '#'; // e.g., DEEPLINK, URL, DISMISS
+                        const ctaValue = cta.value || ''; // The actual URL or deep link
+                        const ctaId = cta.id || `cta-${index}`; // Unique ID for the CTA widget
 
-                        // Basic button styling, you can customize this further with Tailwind classes
                         ctaButtonsHtml += `
                             <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 card-cta" 
                                 data-card-id="${card.cardId}" 
@@ -304,12 +298,12 @@
                     });
                 }
 
-                // Determine icon based on card type or a default
+                // Default icon, you can customize based on card.category or other attributes if available
                 const iconSvg = `
                     <svg class="w-6 h-6 ${card.isClicked ? 'text-gray-500' : 'text-blue-600'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
-                `; // Default bell icon, customize based on card.category or other attributes
+                `; 
 
                 cardElement.innerHTML = `
                     <div class="flex-shrink-0">
@@ -328,31 +322,38 @@
                     </div>
                 `;
 
-                // Handle card click (impression and click tracking)
-                // Use event delegation for CTA buttons if multiple are present
+                // Add event listener for clicks on the card itself or its CTA buttons
                 cardElement.addEventListener('click', (event) => {
                     const target = event.target;
                     const clickedCardId = card.cardId;
 
                     if (target.classList.contains('card-cta')) {
+                        // Click on a CTA button
                         const ctaActionType = target.dataset.ctaAction;
                         const ctaValue = target.dataset.ctaValue;
                         const ctaId = target.dataset.ctaId;
 
-                        // Track CTA click with widget ID
+                        // Track CTA click with widget ID (as per MoEngage docs)
                         Moengage.cards.cardClicked(card, ctaId);
 
-                        // Handle CTA action (e.g., deep link, URL)
+                        // Handle CTA action
                         if (ctaActionType === 'DEEPLINK' || ctaActionType === 'URL') {
                             if (ctaValue) window.location.href = ctaValue;
+                        } else if (ctaActionType === 'DISMISS') {
+                            // Implement dismiss logic here, e.g., remove card from UI
+                            cardElement.remove();
+                            // Optionally, call Moengage.cards.deleteCards([card]) if you want to permanently delete
+                            // from the inbox on MoEngage's side. Be careful with this!
+                            // Moengage.cards.deleteCards([card]).then(() => console.log('Card dismissed and deleted.'));
                         }
                     } else {
-                        // Track general card click (if not on CTA)
+                        // General card click (not on a specific CTA button)
                         Moengage.cards.cardClicked(card);
-                        // Optionally, open full card view or specific action if no CTA clicked
                         console.log('Card clicked (not CTA):', clickedCardId);
+                        // You might want to open a detailed view of the card here
                     }
-                    // Mark card as read visually (optional, based on your UI logic)
+
+                    // Visually mark card as read (optional, based on your UI logic)
                     cardElement.classList.remove('border-blue-500');
                     cardElement.classList.add('border-gray-300');
                     const svgElement = cardElement.querySelector('svg');
@@ -363,23 +364,27 @@
                 });
 
                 // Track card impression when it's added to the DOM and visible
-                // For more robust impression tracking, consider Intersection Observer API for actual visibility
+                // For more robust impression tracking (e.g., when card is actually in viewport),
+                // consider using the Intersection Observer API.
                 Moengage.cards.cardShown(card);
                 
                 cardsContainer.appendChild(cardElement);
             }
 
-            // Fetch cards and render them
+            // Fetch cards from MoEngage
             Moengage.cards.fetchCards().then(function(result) {
                 loadingMessage.classList.add('hidden'); // Hide loading message
                 const cards = result.cards; // Access cards from the resolved promise result
+
                 if (cards && cards.length > 0) {
                     cardsContainer.innerHTML = ''; // Clear any existing static content
                     cards.forEach(card => renderCard(card));
                     totalCardsCountSpan.textContent = cards.length;
+                    currentCardsCountSpan.textContent = cards.length; // Assuming all fetched are shown
                     noCardsMessage.classList.add('hidden'); // Hide "No new messages"
                 } else {
-                    noCardsCountSpan.textContent = 0; // Update count
+                    totalCardsCountSpan.textContent = 0;
+                    currentCardsCountSpan.textContent = 0;
                     noCardsMessage.classList.remove('hidden'); // Show "No new messages"
                 }
                 console.log("Fetched Cards:", cards); // Log fetched cards for debugging
@@ -387,15 +392,18 @@
                 loadingMessage.classList.add('hidden'); // Hide loading message
                 errorMessage.classList.remove('hidden'); // Show error message
                 totalCardsCountSpan.textContent = 0;
+                currentCardsCountSpan.textContent = 0;
                 console.error("Error fetching cards:", error);
             });
         }
 
-        // Call fetchAndRenderCards when the DOM is fully loaded AND MoEngage SDK is ready
+        // --- Main execution block ---
+        // This ensures the DOM is fully loaded before attempting to interact with elements.
         document.addEventListener("DOMContentLoaded", function() {
             // Use a small delay to ensure MoEngage object is fully ready after its script's load event.
             // This can sometimes help with timing issues, especially in various browser environments.
             setTimeout(() => {
+                // Check if Moengage object and its 'cards' module are available
                 if (typeof Moengage !== 'undefined' && Moengage.cards) {
                     Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
                     fetchAndRenderCards(); // Proceed to fetch and render cards
@@ -404,7 +412,7 @@
                     document.getElementById('loading-message').classList.add('hidden');
                     document.getElementById('error-message').classList.remove('hidden');
                 }
-            }, 500); // 500ms delay
+            }, 500); // 500ms delay to allow SDK to fully settle
         });
     </script>
 </body>
