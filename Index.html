@@ -38,17 +38,15 @@
     </style>
     <!-- MoEngage Web SDK Snippet -->
     <script id="moengage">
-        var moeDataCenter = "dc_1"; // Replace "DC" with your actual Data center value (e.g., "dc_1", "dc_2", etc.)
+        var moeDataCenter = "dc_4"; // Replace "DC" with your actual Data center value (e.g., "dc_1", "dc_2", etc.)
         var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // Replace "AppID" with your actual MoEngage Dashboard App ID.
 
         // IMPORTANT: Double-check your moeAppID and moeDataCenter in your MoEngage dashboard.
         // An incorrect App ID or Data Center, or if the Web SDK is not enabled for this App ID,
         // will cause initialization errors like "App is blocked."
-        console.warn("MoEngage Setup: Please ensure moeAppID ('" + moeAppID + "') and moeDataCenter ('" + moeDataCenter + "') are correct and the Web SDK is enabled for this App ID in your MoEngage dashboard.");
+        console.warn("MoEngage Setup: Please ensure moeAppID ('" + moeAppID + "') and moeDataCenter ('" + moeDataCenter + "') are correct and the Web SDK is enabled for this App ID in your MoEngage dashboard, including domain whitelisting.");
 
         !function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){
-            // This is the first initialization point after the SDK script loads.
-            // 'e[a]=e.moe(d)' effectively sets 'window.Moengage = window.moe(d)'
             if(d) {
                 e[a]=e.moe(d); 
                 e[a].initialised=e[a].initialised+1||1;
@@ -143,7 +141,7 @@
         // Replace "YOUR_UNIQUE_USER_ID" with an actual unique ID for the logged-in user.
         // This is crucial for MoEngage to fetch personalized cards for this user.
         // Example: If a user logs in, identify them with their internal user ID.
-        Moengage.add_unique_user_id("Aoftest"); 
+        Moengage.add_unique_user_id("user_test_001"); 
         // You can also add other user attributes if available, e.g.:
         // Moengage.add_email("test.user@example.com");
         // Moengage.add_first_name("Test");
@@ -249,7 +247,9 @@
 
             <!-- MoEngage Cards will be dynamically inserted here -->
             <div id="moengage-cards-container" class="space-y-3">
+                <p id="loading-message" class="text-center text-gray-500">Loading notifications...</p>
                 <p id="no-cards-message" class="text-center text-gray-500 hidden">No new notifications.</p>
+                <p id="error-message" class="text-center text-red-500 hidden">Error loading notifications. Please check your MoEngage setup.</p>
             </div>
         </main>
     </div>
@@ -258,8 +258,16 @@
         // Function to handle fetching and rendering cards
         function fetchAndRenderCards() {
             const cardsContainer = document.getElementById('moengage-cards-container');
+            const loadingMessage = document.getElementById('loading-message');
             const noCardsMessage = document.getElementById('no-cards-message');
+            const errorMessage = document.getElementById('error-message');
             const totalCardsCountSpan = document.getElementById('total-cards-count');
+
+            // Hide all messages initially
+            loadingMessage.classList.remove('hidden');
+            noCardsMessage.classList.add('hidden');
+            errorMessage.classList.add('hidden');
+            cardsContainer.innerHTML = ''; // Clear previous content
 
             // Function to render a single card
             function renderCard(card) {
@@ -363,6 +371,7 @@
 
             // Fetch cards and render them
             Moengage.cards.fetchCards().then(function(result) {
+                loadingMessage.classList.add('hidden'); // Hide loading message
                 const cards = result.cards; // Access cards from the resolved promise result
                 if (cards && cards.length > 0) {
                     cardsContainer.innerHTML = ''; // Clear any existing static content
@@ -370,30 +379,32 @@
                     totalCardsCountSpan.textContent = cards.length;
                     noCardsMessage.classList.add('hidden'); // Hide "No new messages"
                 } else {
+                    noCardsCountSpan.textContent = 0; // Update count
                     noCardsMessage.classList.remove('hidden'); // Show "No new messages"
-                    totalCardsCountSpan.textContent = 0;
                 }
                 console.log("Fetched Cards:", cards); // Log fetched cards for debugging
             }).catch(function(error) {
-                console.error("Error fetching cards:", error);
-                noCardsMessage.classList.remove('hidden'); // Show message on error
+                loadingMessage.classList.add('hidden'); // Hide loading message
+                errorMessage.classList.remove('hidden'); // Show error message
                 totalCardsCountSpan.textContent = 0;
+                console.error("Error fetching cards:", error);
             });
         }
 
         // Call fetchAndRenderCards when the DOM is fully loaded AND MoEngage SDK is ready
         document.addEventListener("DOMContentLoaded", function() {
-            // Check if Moengage object exists and its cards module is enabled
-            // This check is crucial to prevent "Cannot read properties of undefined (reading 'inboxOpened')"
-            // It waits for the SDK to be fully initialized.
-            if (typeof Moengage !== 'undefined' && Moengage.cards) {
-                Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
-                fetchAndRenderCards(); // Proceed to fetch and render cards
-            } else {
-                // If Moengage or Moengage.cards is not ready, log an error.
-                // The 'load' event listener for the SDK script itself should handle the primary initialization.
-                console.error("MoEngage SDK or 'cards' module not fully initialized. Please ensure the SDK script loaded successfully and 'cards: { enable: true }' is set in the initialization config.");
-            }
+            // Use a small delay to ensure MoEngage object is fully ready after its script's load event.
+            // This can sometimes help with timing issues, especially in various browser environments.
+            setTimeout(() => {
+                if (typeof Moengage !== 'undefined' && Moengage.cards) {
+                    Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
+                    fetchAndRenderCards(); // Proceed to fetch and render cards
+                } else {
+                    console.error("MoEngage SDK or 'cards' module not fully initialized. Please ensure the SDK script loaded successfully and 'cards: { enable: true }' is set in the initialization config. Also verify App ID, Data Center, and Domain Whitelisting in MoEngage dashboard.");
+                    document.getElementById('loading-message').classList.add('hidden');
+                    document.getElementById('error-message').classList.remove('hidden');
+                }
+            }, 500); // 500ms delay
         });
     </script>
 </body>
