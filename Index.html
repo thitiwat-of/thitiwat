@@ -48,6 +48,11 @@
                 enable: true
             }
         });
+
+        // Note: The error "Web Push does not work in http mode" is an expected warning from the MoEngage SDK
+        // when running on an insecure (HTTP) connection. Web Push notifications require HTTPS.
+        // This error does NOT affect the functionality of the Cards campaign content.
+        console.warn("MoEngage Web Push: 'Web Push does not work in http mode' is an expected warning when running on HTTP. Web Push requires HTTPS. This does not affect Cards functionality.");
     </script>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-100">
@@ -286,6 +291,7 @@
 
             // Function to render a single card
             function renderCard(card) {
+                console.log("Rendering card:", card); // Log the card object being rendered
                 const cardElement = document.createElement('div');
                 cardElement.classList.add('card-item', 'bg-white', 'rounded-lg', 'p-4', 'mb-4', 'shadow-md', 'flex', 'flex-col', 'space-y-3', 'transition-all', 'duration-300', 'hover:shadow-lg', 'cursor-pointer');
                 cardElement.dataset.cardId = card.cardId;
@@ -299,15 +305,21 @@
                     imageUrl = `<img src="https://placehold.co/600x200/cccccc/333333?text=No+Image" alt="Placeholder Image" class="w-full h-40 object-cover rounded-md mb-3">`;
                 }
 
+                // Ensure title and description are strings, even if empty or null
+                const title = card.title ? String(card.title) : 'No Title';
+                const description = card.description ? String(card.description) : 'No description available.';
+                const updatedAt = card.updatedAt ? new Date(card.updatedAt).toLocaleString() : 'N/A';
+
+
                 cardElement.innerHTML = `
                     ${imageUrl}
-                    <h3 class="text-xl font-semibold text-gray-900">${card.title || 'No Title'}</h3>
-                    <p class="text-gray-700 text-sm">${card.description || 'No description available.'}</p>
-                    <span class="text-xs text-gray-500">${new Date(card.updatedAt).toLocaleString()}</span>
+                    <h3 class="text-xl font-semibold text-gray-900">${title}</h3>
+                    <p class="text-gray-700 text-sm">${description}</p>
+                    <span class="text-xs text-gray-500">${updatedAt}</span>
                     <div class="flex flex-wrap gap-2 mt-2">
                         ${card.callToAction ? card.callToAction.map(cta => `
-                            <a href="${cta.url}" target="_blank" class="cta-button bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200" data-button-id="${cta.id}">
-                                ${cta.text}
+                            <a href="${cta.url || '#'}" target="_blank" class="cta-button bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200" data-button-id="${cta.id}">
+                                ${cta.text || 'Action'}
                             </a>
                         `).join('') : ''}
                     </div>
@@ -368,12 +380,12 @@
                     console.log("Moengage.cards.fetchCards() completed.");
 
                     // 3. Get all categories (optional, for debugging/category display)
-                    // const categories = await Moengage.cards.getCardCategories();
-                    // console.log("Card Categories:", categories);
+                    const categories = await Moengage.cards.getCardCategories();
+                    console.log("Card Categories:", categories);
 
                     // 4. Get cards for 'All' category
                     const cards = await Moengage.cards.getCardsForCategory('All');
-                    console.log("Cards for 'All' category:", cards);
+                    console.log("Received cards for 'All' category:", cards); // Log the received cards array
 
                     if (cards && cards.length > 0) {
                         cards.forEach(card => {
@@ -383,6 +395,7 @@
                     } else {
                         cardsLoading.classList.add('hidden');
                         cardsEmpty.classList.remove('hidden');
+                        cardsEmpty.textContent = "No cards available."; // Ensure text is set
                     }
                 } catch (error) {
                     console.error("Error loading MoEngage Cards:", error);
