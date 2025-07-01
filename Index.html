@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notification Inbox</title>
+    <title>Web Inbox</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Inter Font -->
@@ -13,314 +13,269 @@
             font-family: 'Inter', sans-serif;
             background-color: #f4f7f6;
         }
-        /* Custom scrollbar for main content area */
-        .main-content-scroll::-webkit-scrollbar {
+        /* Custom scrollbar for sidebar */
+        .sidebar::-webkit-scrollbar {
             width: 8px;
         }
-        .main-content-scroll::-webkit-scrollbar-thumb {
+        .sidebar::-webkit-scrollbar-thumb {
             background-color: #cbd5e0; /* lightgray-400 */
             border-radius: 4px;
         }
-        .main-content-scroll::-webkit-scrollbar-track {
+        .sidebar::-webkit-scrollbar-track {
             background-color: #e2e8f0; /* lightgray-200 */
         }
     </style>
-    <!-- MoEngage Web SDK Snippet -->
-    <script id="moengage">
-        var moeDataCenter = "dc_1"; // Replace "DC" with your actual Data center value (e.g., "dc_1", "dc_2", etc.)
-        var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // Replace "AppID" with your actual MoEngage Dashboard App ID.
+   <script id="moengage">var moeDataCenter = "dc_4"; // Replace "DC" with the actual Data center value from the above table
+                  var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // Replace "AppID" available in the settings page of MoEngage Dashboard.
+                 !function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){if(d)return e[a]=e.moe(d),e[a].initialised=e[a].initialised+1||1,!0}),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/moe_webSdk.min.latest.js","Moengage");
+                  Moengage = moe({
+                    app_id:"32CIEEX5VX43302A2BQH85ND",
+                    debug_logs: 1,
+                    cards: {
+      enable: true,
+      placeholder: "#cardIcon", // CSS selector of inbox icon
+      backgroundColor: "#F6FBFC", // any valid CSS color format
+      overLayColor: "rgba(0, 0, 0, 0.8)",
+      fontFaces: [{
+        family: "Sofia",
+        url: "https://fonts.gstatic.com/s/sofia/v14/8QIHdirahM3j_su5uI0Orbjl.woff2"
+      }, {
+        family: "Audiowide",
+        url: "https://fonts.gstatic.com/s/audiowide/v16/l7gdbjpo0cum0ckerWCdlg_OMRlABg.woff2"
+      }],
+      cardDismiss: {
+        color: "#db2828", // any valid CSS color format
+        enable: false // boolean value, which enable the dismiss option.
+      },
+      optionButtonColor: "#C4C4C4", // any valid CSS color format
+      dateTimeColor: "#8E8E8E", // any valid CSS color format
+      unclickedCardIndicatorColor: "blue", // any valid CSS color format
+      pinIcon: "https://app-cdn.moengage.com/sdk/pin-icon.svg", // absolute path to the icon image.
+      refreshIcon: "https://app-cdn.moengage.com/sdk/refresh-icon.svg", // absolute path to the icon image.
+      navigationBar: {
+        backgroundColor: "#00237C", // any valid CSS color format
+        text: "Notifications", // string. eg, Notifications
+        color: "#fff", // any valid CSS color format
+        fontSize: "16px", // any valid CSS size format
+        fontFamily: "", // any font family which is added to the website
+      },
+      closeButton: {
+        webIcon: "https://app-cdn.moengage.com/sdk/cross-icon.svg",
+        mWebIcon: "https://app-cdn.moengage.com/sdk/cross-icon.svg",
+      },
+      tab: {
+        active: {
+          color: "#06A6B7",
+          underlineColor: "#06A6B7",
+          backgroundColor: "transparent"
+        },
+        inactiveTabFontColor: "#7C7C7C",
+        fontSize: "14px", // any valid CSS size format
+        fontFamily: "", // any font family which is added to the website
+        backgroundColor: "#fff", // any valid CSS color format
+      },
+      webFloating: {
+        enable: false, // false by default
+        icon: "https://app-cdn.moengage.com/sdk/bell-icon.svg", // absolute path to the icon image. by default, our icon will be used.
+        postion: "0px 10px 40px 0", // need all 4 offset in proper CSS format in the order of top, right, bottom, left.
+        countBackgroundColor: "#FF5A5F",
+        countColor: "#fff",
+        iconBackgroundColor: "#D9DFED",
+        fontFamily: "Audiowide"
+      },
+      mWebFloating: {
+        enable: false, // false by default
+        icon: "https://app-cdn.moengage.com/sdk/bell-icon.svg", // absolute path to the icon image. by default, our icon will be used.
+        postion: "0px 10px 40px 0", // need all 4 offset in proper CSS format in the order of top, right, bottom, left.
+        countBackgroundColor: "#FF5A5F",
+        countColor: "#fff",
+        iconBackgroundColor: "#D9DFED",
+        fontFamily: "Audiowide"
+      },
+      card: {
+        headerFontSize: "16px",
+        descriptionFontSize: "14px",
+        ctaFontSize: "12px",
+        fontFamily: "inherit",
+        horizontalRowColor: "#D9DFED"
+      },
+      noDataContent: {
+        img: "https://app-cdn.moengage.com/sdk/cards-no-result.svg",
+        text: "No notifications to show, check again later.",
+      }
+    }
+  });
 
-        // IMPORTANT: Double-check your moeAppID and moeDataCenter in your MoEngage dashboard.
-        // An incorrect App ID or Data Center, or if the Web SDK is not enabled for this App ID,
-        // will cause initialization errors like "App is blocked."
-        console.warn("MoEngage Setup: Please ensure moeAppID ('" + moeAppID + "') and moeDataCenter ('" + moeDataCenter + "') are correct and the Web SDK is enabled for this App ID in your MoEngage dashboard.");
 
-        !function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){
-            // This is the first initialization point after the SDK script loads.
-            // 'e[a]=e.moe(d)' effectively sets 'window.Moengage = window.moe(d)'
-            if(d) {
-                e[a]=e.moe(d); 
-                e[a].initialised=e[a].initialised+1||1;
-            }
-        }),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/moe_webSdk.min.latest.js","Moengage");
-        
-        // --- MoEngage Initialization with Cards Enabled ---
-        // This block should run AFTER the SDK snippet above has loaded and defined 'moe'.
-        // Placing it here ensures that 'moe' is available to configure 'Moengage'.
-        Moengage = moe({
-            app_id: moeAppID, // Use the variable here
-            debug_logs: 1, // Set to 1 to see debug messages in console
-            cards: {
-                enable: true, // Crucial for enabling the Cards module
-                // The following configurations are primarily for MoEngage's pre-built inbox UI.
-                // If you are building a custom UI, these will not directly apply unless you
-                // explicitly use them in your rendering logic.
-                placeholder: "#cardIcon", 
-                backgroundColor: "#F6FBFC", 
-                overLayColor: "rgba(0, 0, 0, 0.8)",
-                fontFaces: [{
-                    family: "Sofia",
-                    url: "https://fonts.gstatic.com/s/sofia/v14/8QIHdirahM3j_su5uI0Orbjl.woff2"
-                }, {
-                    family: "Audiowide",
-                    url: "https://fonts.gstatic.com/s/audiowide/v16/l7gdbjpo0cum0ckerWCdlg_OMRlABg.woff2"
-                }],
-                cardDismiss: {
-                    color: "#db2828", 
-                    enable: false 
-                },
-                optionButtonColor: "#C4C4C4", 
-                dateTimeColor: "#8E8E8E", 
-                unclickedCardIndicatorColor: "blue", 
-                pinIcon: "https://app-cdn.moengage.com/sdk/pin-icon.svg", 
-                refreshIcon: "https://app-cdn.moengage.com/sdk/refresh-icon.svg", 
-                navigationBar: {
-                    backgroundColor: "#00237C", 
-                    text: "Notifications", 
-                    color: "#fff", 
-                    fontSize: "16px", 
-                    fontFamily: ""
-                },
-                closeButton: {
-                    webIcon: "https://app-cdn.moengage.com/sdk/cross-icon.svg",
-                    mWebIcon: "https://app-cdn.moengage.com/sdk/cross-icon.svg",
-                },
-                tab: {
-                    active: {
-                        color: "#06A6B7",
-                        underlineColor: "#06A6B7",
-                        backgroundColor: "transparent"
-                    },
-                    inactiveTabFontColor: "#7C7C7C",
-                    fontSize: "14px", 
-                    fontFamily: "", 
-                    backgroundColor: "#fff", 
-                },
-                webFloating: {
-                    enable: false, 
-                    icon: "https://app-cdn.moengage.com/sdk/bell-icon.svg", 
-                    postion: "0px 10px 40px 0", 
-                    countBackgroundColor: "#FF5A5F",
-                    countColor: "#fff",
-                    iconBackgroundColor: "#D9DFED",
-                    fontFamily: "Audiowide"
-                },
-                mWebFloating: {
-                    enable: false, 
-                    icon: "https://app-cdn.moengage.com/sdk/bell-icon.svg", 
-                    postion: "0px 10px 40px 0", 
-                    countBackgroundColor: "#FF5A5F",
-                    countColor: "#fff",
-                    iconBackgroundColor: "#D9DFED",
-                    fontFamily: "Audiowide"
-                },
-                card: {
-                    headerFontSize: "16px",
-                    descriptionFontSize: "14px",
-                    ctaFontSize: "12px",
-                    fontFamily: "inherit",
-                    horizontalRowColor: "#D9DFED"
-                },
-                noDataContent: {
-                    img: "https://app-cdn.moengage.com/sdk/cards-no-result.svg",
-                    text: "No notifications to show, check again later.",
-                }
-            }
-        });
-
-        // --- IMPORTANT: User Identification ---
-        // Replace "YOUR_UNIQUE_USER_ID" with an actual unique ID for the logged-in user.
-        // This is crucial for MoEngage to fetch personalized cards for this user.
-        // Example: If a user logs in, identify them with their internal user ID.
-        Moengage.add_unique_user_id("user_test_001"); 
-        // You can also add other user attributes if available, e.g.:
-        // Moengage.add_email("test.user@example.com");
-        // Moengage.add_first_name("Test");
-        // Moengage.add_last_name("User");
-
-    </script>
+                 
+                </script>
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- Header -->    
-    <header class="bg-white shadow-sm p-4 flex items-center justify-between rounded-b-lg">        
-        <h1 class="text-2xl font-bold text-gray-800">Your Notifications</h1>        
-        <div class="relative w-1/3 max-w-md">            
-            <input type="text" placeholder="Search notifications..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">            
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>        
-        </div>        
-        <div class="flex items-center space-x-4">            
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">                
-                Mark All Read            
-            </button>            
-            <div class="relative">                
-                <img src="https://placehold.co/40x40/007bff/ffffff?text=U" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer border-2 border-blue-400" onerror="this.onerror=null;this.src='https://placehold.co/40x40/cccccc/000000?text=NA'">            
-            </div>        
-        </div>    
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 flex items-center justify-between rounded-b-lg">
+        <h1 class="text-2xl font-bold text-gray-800">Inbox</h1>
+        <div class="relative w-1/3">
+            <input type="text" placeholder="Search emails..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button class="bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                Compose
+            </button>
+            <div class="relative">
+                <img src="https://placehold.co/40x40/007bff/ffffff?text=U" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer border-2 border-blue-400" onerror="this.onerror=null;this.src='https://placehold.co/40x40/cccccc/000000?text=NA'">
+                <!-- Dropdown menu (hidden by default) -->
+                <!-- <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a>
+                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Settings</a>
+                    <a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Logout</a>
+                </div> -->
+            </div>
+        </div>
     </header>
 
-    <!-- Main Content Area -->    
-    <div class="flex-1 p-6 overflow-y-auto main-content-scroll">        
-        <div class="bg-white shadow rounded-lg p-4 mb-4 flex items-center justify-between">            
-            <h2 class="text-xl font-semibold text-gray-800">All Notifications</h2>            
-            <div class="flex items-center space-x-2 text-gray-600">                
-                <span>1-5 of <span id="total-cards-count">0</span></span>
-                <button class="p-1 rounded-full hover:bg-gray-200">                    
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>                
-                </button>                
-                <button class="p-1 rounded-full hover:bg-gray-200">                    
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>                
-                </button>            
-            </div>        
-        </div>
+    <!-- Main Content Area -->
+    <div class="flex flex-1 overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="w-64 bg-gray-50 p-4 border-r border-gray-200 flex flex-col rounded-tr-lg rounded-br-lg sidebar overflow-y-auto">
+            <nav class="flex-grow">
+                <ul>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center px-4 py-2 text-blue-700 bg-blue-100 rounded-md font-semibold hover:bg-blue-200">
+                            <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                            Inbox
+                            <span class="ml-auto bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">12</span>
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                            <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><line x1="22" y1="2" x2="15" y2="9"></line><path d="M22 2L11 13 7 9l-7 7 7 7 7-7 13-11z"></path></svg>
+                            Sent
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                            <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v18z"></path><path d="M14 2v6h6"></path></svg>
+                            Drafts
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                            <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                            Trash
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#" class="flex items-center px-4 py-2 text-gray-700 rounded-md hover:bg-gray-200">
+                            <svg class="mr-3" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                            Spam
+                        </a>
+                    </li>
+                </ul>
+            </nav>
 
-        <!-- MoEngage Cards will be dynamically inserted here -->
-        <div id="moengage-cards-container" class="space-y-3">
-            <p id="no-cards-message" class="text-center text-gray-500 hidden">No new notifications.</p>
-        </div>
-    </div>
+            <div class="mt-auto pt-4 border-t border-gray-200">
+                <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Folders</h3>
+                <ul>
+                    <li class="mb-1">
+                        <a href="#" class="block px-4 py-1 text-gray-700 text-sm rounded-md hover:bg-gray-200">Work</a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="#" class="block px-4 py-1 text-gray-700 text-sm rounded-md hover:bg-gray-200">Personal</a>
+                    </li>
+                    <li class="mb-1">
+                        <a href="#" class="block px-4 py-1 text-gray-700 text-sm rounded-md hover:bg-gray-200">Promotions</a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
 
-    <script type="text/javascript">
-        // Function to handle fetching and rendering cards
-        function fetchAndRenderCards() {
-            const cardsContainer = document.getElementById('moengage-cards-container');
-            const noCardsMessage = document.getElementById('no-cards-message');
-            const totalCardsCountSpan = document.getElementById('total-cards-count');
+        <!-- Email List -->
+        <main class="flex-1 p-6 overflow-y-auto bg-gray-100">
+            <div class="bg-white shadow rounded-lg p-4 mb-4 flex items-center justify-between">
+                <h2 class="text-xl font-semibold text-gray-800">All Messages</h2>
+                <div class="flex items-center space-x-2 text-gray-600">
+                    <span>1-10 of 124</span>
+                    <button class="p-1 rounded-full hover:bg-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                    </button>
+                    <button class="p-1 rounded-full hover:bg-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    </button>
+                </div>
+            </div>
 
-            // Function to render a single card
-            function renderCard(card) {
-                const cardElement = document.createElement('div');
-                // Determine border color based on read status or card type
-                const borderColor = card.isClicked ? 'border-gray-300' : 'border-blue-500'; // Assuming 'isClicked' indicates read status
-                
-                cardElement.className = `bg-white rounded-lg shadow-sm p-4 flex items-start space-x-4 border-l-4 ${borderColor} cursor-pointer hover:shadow-md`;
-                cardElement.dataset.cardId = card.cardId; // Store cardId for tracking
-
-                let imageUrl = card.content.body.imageUrl || '';
-                let title = card.content.body.title || 'No Title';
-                let message = card.content.body.message || 'No message content.';
-                let ctaButtonsHtml = '';
-
-                // Check for CTA (Call to Action) if available
-                if (card.content.body.hasOwnProperty('cta') && Array.isArray(card.content.body.cta)) {
-                    card.content.body.cta.forEach((cta, index) => {
-                        const ctaText = cta.text || 'View Details';
-                        const ctaAction = cta.action || '#';
-                        const ctaValue = cta.value || '';
-                        const ctaId = cta.id || `cta-${index}`; // Use CTA ID if available, otherwise index
-
-                        // Basic button styling, you can customize this further with Tailwind classes
-                        ctaButtonsHtml += `
-                            <button class="mt-2 bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 card-cta" 
-                                data-card-id="${card.cardId}" 
-                                data-cta-action="${ctaAction}" 
-                                data-cta-value="${ctaValue}"
-                                data-cta-id="${ctaId}">
-                                ${ctaText}
-                            </button>
-                        `;
-                    });
-                }
-
-                // Determine icon based on card type or a default
-                const iconSvg = `
-                    <svg class="w-6 h-6 ${card.isClicked ? 'text-gray-500' : 'text-blue-600'}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                    </svg>
-                `; // Default bell icon, customize based on card.category or other attributes
-
-                cardElement.innerHTML = `
-                    <div class="flex-shrink-0">
-                        ${iconSvg}
-                    </div>
+            <!-- Individual Email Items -->
+            <div class="space-y-3">
+                <!-- Email Item 1 -->
+                <div class="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 border-l-4 border-blue-500 cursor-pointer hover:shadow-md">
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
                     <div class="flex-1">
                         <div class="flex justify-between items-center mb-1">
-                            <span class="font-bold text-gray-800">${title}</span>
-                            <span class="text-sm text-gray-500">${new Date(card.createdAt).toLocaleDateString()}</span>
+                            <span class="font-bold text-gray-800">Alice Johnson</span>
+                            <span class="text-sm text-gray-500">10:30 AM</span>
                         </div>
-                        ${imageUrl ? `<img src="${imageUrl}" alt="Card Image" class="w-full h-auto rounded-md my-2">` : ''}
-                        <p class="text-gray-600 text-sm">${message}</p>
-                        <div class="flex space-x-2 mt-2">
-                            ${ctaButtonsHtml}
-                        </div>
+                        <p class="text-gray-900 font-semibold mb-1">Project Update - Week 3 Progress</p>
+                        <p class="text-gray-600 text-sm truncate">Hi team, here's a quick update on our progress this week. We've completed the initial design phase...</p>
                     </div>
-                `;
+                </div>
 
-                // Handle card click (impression and click tracking)
-                // Use event delegation for CTA buttons if multiple are present
-                cardElement.addEventListener('click', (event) => {
-                    const target = event.target;
-                    const clickedCardId = card.cardId;
+                <!-- Email Item 2 (Unread) -->
+                <div class="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 border-l-4 border-green-500 cursor-pointer hover:shadow-md">
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-gray-800">Bob Williams</span>
+                            <span class="text-sm text-gray-500">Yesterday</span>
+                        </div>
+                        <p class="text-gray-900 font-bold mb-1">Meeting Reminder: Q3 Planning</p>
+                        <p class="text-gray-600 text-sm truncate">Just a friendly reminder about our Q3 planning meeting tomorrow at 9 AM. Please come prepared...</p>
+                    </div>
+                </div>
 
-                    if (target.classList.contains('card-cta')) {
-                        const ctaActionType = target.dataset.ctaAction;
-                        const ctaValue = target.dataset.ctaValue;
-                        const ctaId = target.dataset.ctaId;
+                <!-- Email Item 3 -->
+                <div class="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 border-l-4 border-gray-300 cursor-pointer hover:shadow-md">
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-gray-800">Charlie Davis</span>
+                            <span class="text-sm text-gray-500">June 28</span>
+                        </div>
+                        <p class="text-gray-900 font-semibold mb-1">Your Order #12345 Has Shipped!</p>
+                        <p class="text-gray-600 text-sm truncate">Good news! Your recent order with us has officially shipped. You can track your package here...</p>
+                    </div>
+                </div>
 
-                        // Track CTA click with widget ID
-                        Moengage.cards.cardClicked(card, ctaId);
+                <!-- Email Item 4 -->
+                <div class="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 border-l-4 border-gray-300 cursor-pointer hover:shadow-md">
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-gray-800">Marketing Team</span>
+                            <span class="text-sm text-gray-500">June 27</span>
+                        </div>
+                        <p class="text-gray-900 font-semibold mb-1">Exclusive Offer: 20% Off Your Next Purchase!</p>
+                        <p class="text-gray-600 text-sm truncate">Don't miss out on our special summer sale! Get 20% off all items for a limited time...</p>
+                    </div>
+                </div>
 
-                        // Handle CTA action (e.g., deep link, URL)
-                        if (ctaActionType === 'DEEPLINK' || ctaActionType === 'URL') {
-                            if (ctaValue) window.location.href = ctaValue;
-                        }
-                    } else {
-                        // Track general card click (if not on CTA)
-                        Moengage.cards.cardClicked(card);
-                        // Optionally, open full card view or specific action if no CTA clicked
-                        console.log('Card clicked (not CTA):', clickedCardId);
-                    }
-                    // Mark card as read visually (optional, based on your UI logic)
-                    cardElement.classList.remove('border-blue-500');
-                    cardElement.classList.add('border-gray-300');
-                    const svgElement = cardElement.querySelector('svg');
-                    if (svgElement) {
-                        svgElement.classList.remove('text-blue-600');
-                        svgElement.classList.add('text-gray-500');
-                    }
-                });
-
-                // Track card impression when it's added to the DOM and visible
-                // For more robust impression tracking, consider Intersection Observer API for actual visibility
-                Moengage.cards.cardShown(card);
-                
-                cardsContainer.appendChild(cardElement);
-            }
-
-            // Fetch cards and render them
-            Moengage.cards.fetchCards().then(function(result) {
-                const cards = result.cards; // Access cards from the resolved promise result
-                if (cards && cards.length > 0) {
-                    cardsContainer.innerHTML = ''; // Clear any existing static content
-                    cards.forEach(card => renderCard(card));
-                    totalCardsCountSpan.textContent = cards.length;
-                    noCardsMessage.classList.add('hidden'); // Hide "No new messages"
-                } else {
-                    noCardsMessage.classList.remove('hidden'); // Show "No new messages"
-                    totalCardsCountSpan.textContent = 0;
-                }
-                console.log("Fetched Cards:", cards); // Log fetched cards for debugging
-            }).catch(function(error) {
-                console.error("Error fetching cards:", error);
-                noCardsMessage.classList.remove('hidden'); // Show message on error
-                totalCardsCountSpan.textContent = 0;
-            });
-        }
-
-        // Call fetchAndRenderCards when the DOM is fully loaded AND MoEngage SDK is ready
-        document.addEventListener("DOMContentLoaded", function() {
-            // Check if Moengage object exists and its cards module is enabled
-            // This check is crucial to prevent "Cannot read properties of undefined (reading 'inboxOpened')"
-            // It waits for the SDK to be fully initialized.
-            if (typeof Moengage !== 'undefined' && Moengage.cards) {
-                Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
-                fetchAndRenderCards(); // Proceed to fetch and render cards
-            } else {
-                // If Moengage or Moengage.cards is not ready, log an error.
-                // The 'load' event listener for the SDK script itself should handle the primary initialization.
-                console.error("MoEngage SDK or 'cards' module not fully initialized. Please ensure the SDK script loaded successfully and 'cards: { enable: true }' is set in the initialization config.");
-            }
-        });
-    </script>
+                <!-- Email Item 5 -->
+                <div class="bg-white rounded-lg shadow-sm p-4 flex items-center space-x-4 border-l-4 border-gray-300 cursor-pointer hover:shadow-md">
+                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 rounded">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="font-bold text-gray-800">Support Team</span>
+                            <span class="text-sm text-gray-500">June 26</span>
+                        </div>
+                        <p class="text-gray-900 font-semibold mb-1">Re: Your recent query about account access</p>
+                        <p class="text-gray-600 text-sm truncate">Thank you for reaching out. We have received your request regarding account access issues...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 </body>
+
+
 </html>
