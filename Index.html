@@ -278,19 +278,44 @@
                     const categories = await Moengage.cards.getCardCategories();
                     console.log("Card Categories:", categories);
 
-                    // 4. Get cards for 'All' category
-                    const cards = await Moengage.cards.getCardsForCategory('All');
-                    console.log("Received cards for 'All' category:", cards); // Log the received cards array
+                    // 4. Get cards for 'All' category - this provides a list of cards, potentially with basic info
+                    const initialCards = await Moengage.cards.getCardsForCategory('All');
+                    console.log("Received initial cards for 'All' category (before getCardsInfo):", initialCards);
 
-                    if (cards && cards.length > 0) {
-                        cards.forEach(card => {
-                            cardsContent.appendChild(renderCard(card));
+                    if (initialCards && initialCards.length > 0) {
+                        const detailedCardsPromises = initialCards.map(card => {
+                            if (card.cardId) {
+                                // Fetch full details for each card using getCardsInfo
+                                return Moengage.cards.getCardsInfo(card.cardId)
+                                    .then(detailedCard => {
+                                        console.log(`Fetched detailed info for card ${card.cardId}:`, detailedCard);
+                                        return detailedCard;
+                                    })
+                                    .catch(error => {
+                                        console.error(`Error fetching detailed info for card ${card.cardId}:`, error);
+                                        return null; // Return null if fetching details fails for this card
+                                    });
+                            }
+                            return Promise.resolve(null); // Return null if cardId is missing
                         });
-                        cardsLoading.classList.add('hidden');
+
+                        // Wait for all detailed card fetches to complete
+                        const detailedCards = (await Promise.all(detailedCardsPromises)).filter(card => card !== null);
+
+                        if (detailedCards.length > 0) {
+                            detailedCards.forEach(card => {
+                                cardsContent.appendChild(renderCard(card));
+                            });
+                            cardsLoading.classList.add('hidden');
+                        } else {
+                            cardsLoading.classList.add('hidden');
+                            cardsEmpty.classList.remove('hidden');
+                            cardsEmpty.textContent = "No detailed cards available after fetching details.";
+                        }
                     } else {
                         cardsLoading.classList.add('hidden');
                         cardsEmpty.classList.remove('hidden');
-                        cardsEmpty.textContent = "No cards available."; // Ensure text is set
+                        cardsEmpty.textContent = "No cards available from 'All' category.";
                     }
                 } catch (error) {
                     console.error("Error loading MoEngage Cards:", error);
@@ -339,3 +364,4 @@
     </script>
 </body>
 </html>
+
