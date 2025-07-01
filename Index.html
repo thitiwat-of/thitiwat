@@ -189,34 +189,54 @@
                 console.log("Rendering card:", card); // Log the card object being rendered
                 const cardElement = document.createElement('div');
                 cardElement.classList.add('card-item', 'bg-white', 'rounded-lg', 'p-4', 'mb-4', 'shadow-md', 'flex', 'flex-col', 'space-y-3', 'transition-all', 'duration-300', 'hover:shadow-lg', 'cursor-pointer');
-                cardElement.dataset.cardId = card.cardId;
-                cardElement.dataset.campaignId = card.campaignId || ''; // Store campaignId if available
+                cardElement.dataset.cardId = card.id; // Use card.id from the provided JSON
+                cardElement.dataset.campaignId = card.metaData ? card.metaData.moe_campaign_id : ''; // Use moe_campaign_id from metaData
 
-                let imageUrl = '';
-                if (card.media && card.media.url) {
-                    imageUrl = `<img src="${card.media.url}" alt="${card.title || 'Card Image'}" class="w-full h-40 object-cover rounded-md mb-3">`;
-                } else {
-                    // Placeholder image if no media URL
-                    imageUrl = `<img src="https://placehold.co/600x200/cccccc/333333?text=No+Image" alt="Placeholder Image" class="w-full h-40 object-cover rounded-md mb-3">`;
+                let title = 'No Title';
+                let description = 'No description available.';
+                let ctaButtonsHtml = '';
+                let imageUrl = ''; // No image in the provided structure, so it will remain empty
+
+                // Extract content from templateData
+                if (card.templateData && card.templateData.containers && card.templateData.containers.length > 0) {
+                    const container = card.templateData.containers[0];
+
+                    // Extract text widgets for title and description
+                    const textWidgets = container.widgets.filter(widget => widget.type === 'text');
+                    if (textWidgets.length > 0) {
+                        // Use innerHTML to handle potential HTML tags within the content
+                        title = textWidgets[0].content || 'No Title';
+                        if (textWidgets.length > 1) {
+                            description = textWidgets[1].content || 'No description available.';
+                        }
+                    }
+
+                    // Extract actions for CTA buttons
+                    if (container.actions && container.actions.length > 0) {
+                        ctaButtonsHtml = container.actions.map((action, index) => {
+                            // Assuming 'navigate' action type with 'value' as URL and 'name' as text
+                            const ctaText = action.name || 'Action ' + (index + 1);
+                            const ctaUrl = action.value || '#';
+                            const ctaId = `cta-${index}`; // Simple ID for tracking
+                            return `
+                                <a href="${ctaUrl}" target="_blank" class="cta-button bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200" data-button-id="${ctaId}" data-action-type="${action.type}">
+                                    ${ctaText}
+                                </a>
+                            `;
+                        }).join('');
+                    }
                 }
 
-                // Ensure title and description are strings, even if empty or null
-                const title = card.title ? String(card.title) : 'No Title';
-                const description = card.description ? String(card.description) : 'No description available.';
-                const updatedAt = card.updatedAt ? new Date(card.updatedAt).toLocaleString() : 'N/A';
-
+                // Convert Unix timestamp (seconds) to milliseconds for Date object
+                const updatedAt = card.updatedAt ? new Date(card.updatedAt * 1000).toLocaleString() : 'N/A';
 
                 cardElement.innerHTML = `
-                    ${imageUrl}
+                    ${imageUrl} <!-- This will be empty as no image field is found in the sample -->
                     <h3 class="text-xl font-semibold text-gray-900">${title}</h3>
                     <p class="text-gray-700 text-sm">${description}</p>
                     <span class="text-xs text-gray-500">${updatedAt}</span>
                     <div class="flex flex-wrap gap-2 mt-2">
-                        ${card.callToAction ? card.callToAction.map(cta => `
-                            <a href="${cta.url || '#'}" target="_blank" class="cta-button bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200" data-button-id="${cta.id}">
-                                ${cta.text || 'Action'}
-                            </a>
-                        `).join('') : ''}
+                        ${ctaButtonsHtml}
                     </div>
                 `;
 
@@ -247,7 +267,7 @@
 
                 // Mark card as shown when it's rendered
                 if (typeof Moengage !== 'undefined' && Moengage.cards) {
-                    Moengage.cards.cardShown(card.cardId);
+                    Moengage.cards.cardShown(card.id); // Use card.id for cardShown
                 }
 
                 return cardElement;
@@ -284,7 +304,7 @@
 
                     if (initialCards && initialCards.length > 0) {
                         const detailedCardsPromises = initialCards.map(card => {
-                            if (card.cardId) {
+                            if (card.cardId) { // Check for card.cardId from the initial list
                                 // Fetch full details for each card using getCardsInfo
                                 return Moengage.cards.getCardsInfo(card.cardId)
                                     .then(detailedCard => {
@@ -296,7 +316,7 @@
                                         return null; // Return null if fetching details fails for this card
                                     });
                             }
-                            return Promise.resolve(null); // Return null if cardId is missing
+                            return Promise.resolve(null); // Return null if cardId is missing from initial list
                         });
 
                         // Wait for all detailed card fetches to complete
