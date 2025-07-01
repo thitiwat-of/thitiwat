@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notification & Cards Inbox</title>
+    <title>Cards Inbox</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -63,22 +63,22 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                Inbox
+                Cards Inbox
             </h1>
         </div>
 
         <!-- Tab Navigation -->
         <div class="flex justify-around bg-gray-50 border-b border-gray-200">
-            <button id="notifications-tab" class="tab-button flex-1 py-3 text-lg font-medium text-gray-700 hover:text-blue-500 transition-colors duration-200 active">
+            <button id="notifications-tab" class="tab-button flex-1 py-3 text-lg font-medium text-gray-700 hover:text-blue-500 transition-colors duration-200">
                 Notifications
             </button>
-            <button id="cards-tab" class="tab-button flex-1 py-3 text-lg font-medium text-gray-700 hover:text-blue-500 transition-colors duration-200">
+            <button id="cards-tab" class="tab-button flex-1 py-3 text-lg font-medium text-gray-700 hover:text-blue-500 transition-colors duration-200 active">
                 Cards
             </button>
         </div>
 
         <!-- Notification List Container -->
-        <div id="notifications-content" class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollable-list">
+        <div id="notifications-content" class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollable-list hidden">
             <!-- Example Notification Item 1 (Unread) -->
             <div class="notification-item bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4 mb-4 shadow-sm flex items-start space-x-4 transition-all duration-300 hover:shadow-md">
                 <div class="flex-shrink-0 mt-1">
@@ -191,7 +191,7 @@
         </div>
 
         <!-- Cards List Container -->
-        <div id="cards-content" class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollable-list hidden">
+        <div id="cards-content" class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollable-list">
             <div id="cards-loading" class="text-center text-gray-500 py-8">Loading cards...</div>
             <div id="cards-empty" class="text-center text-gray-500 py-8 hidden">No cards available.</div>
             <!-- Cards will be dynamically loaded here -->
@@ -231,6 +231,9 @@
             // Event listeners for tab buttons
             notificationsTab.addEventListener('click', () => switchTab('notifications'));
             cardsTab.addEventListener('click', () => switchTab('cards'));
+
+            // Set 'Cards' tab as active by default on load
+            switchTab('cards');
 
             // Existing notification functionality
             const markAsReadButtons = document.querySelectorAll('.mark-as-read-btn');
