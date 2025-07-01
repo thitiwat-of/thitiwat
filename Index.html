@@ -27,7 +27,7 @@
     </style>
     <!-- MoEngage Web SDK Snippet -->
     <script id="moengage">
-        var moeDataCenter = "dc_4"; // Replace "DC" with your actual Data center value (e.g., "dc_1", "dc_2", etc.)
+        var moeDataCenter = "dc_1"; // Replace "DC" with your actual Data center value (e.g., "dc_1", "dc_2", etc.)
         var moeAppID = "5NBTRC00JOXC648IMV950JSH"; // Replace "AppID" with your actual MoEngage Dashboard App ID.
 
         // IMPORTANT: Double-check your moeAppID and moeDataCenter in your MoEngage dashboard.
@@ -36,30 +36,22 @@
         console.warn("MoEngage Setup: Please ensure moeAppID ('" + moeAppID + "') and moeDataCenter ('" + moeDataCenter + "') are correct and the Web SDK is enabled for this App ID in your MoEngage dashboard.");
 
         !function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){
+            // This is the first initialization point after the SDK script loads.
+            // 'e[a]=e.moe(d)' effectively sets 'window.Moengage = window.moe(d)'
             if(d) {
-                e[a]=e.moe(d); // This initializes Moengage
+                e[a]=e.moe(d); 
                 e[a].initialised=e[a].initialised+1||1;
-                
-                // --- Call MoEngage Cards functions here after SDK is fully loaded and initialized ---
-                if (typeof Moengage !== 'undefined' && Moengage.cards) {
-                    Moengage.cards.inboxOpened();
-                    fetchAndRenderCards(); // Call a function to handle fetching and rendering
-                } else {
-                    console.error("MoEngage.cards module not available after SDK load. Ensure 'cards: { enable: true }' is correctly set.");
-                }
-                // --- End MoEngage Cards functions ---
-                return !0
             }
         }),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/moe_webSdk.min.latest.js","Moengage");
         
-        // Initialize MoEngage with Cards enabled and debug logs
-        // This 'Moengage = moe({...})' line should be executed after the SDK snippet (above)
-        // has loaded and defined the 'moe' function.
+        // --- MoEngage Initialization with Cards Enabled ---
+        // This block should run AFTER the SDK snippet above has loaded and defined 'moe'.
+        // Placing it here ensures that 'moe' is available to configure 'Moengage'.
         Moengage = moe({
             app_id: moeAppID, // Use the variable here
-            debug_logs: 0, // Set to 1 to see debug messages in console
+            debug_logs: 1, // Set to 1 to see debug messages in console
             cards: {
-                enable: true,
+                enable: true, // Crucial for enabling the Cards module
                 // The following configurations are primarily for MoEngage's pre-built inbox UI.
                 // If you are building a custom UI, these will not directly apply unless you
                 // explicitly use them in your rendering logic.
@@ -315,12 +307,20 @@
             });
         }
 
-        // The DOMContentLoaded listener ensures the HTML structure is ready.
-        // The MoEngage SDK snippet itself has a 'load' event listener for its script.
-        // We need to ensure MoEngage object is fully available before calling its methods.
-        // The `fetchAndRenderCards` function will now be called from within the SDK's load listener.
-        // This ensures `Moengage.cards` is defined.
-        // No direct call to fetchAndRenderCards() here, it's handled by the SDK's internal load callback.
+        // Call fetchAndRenderCards when the DOM is fully loaded AND MoEngage SDK is ready
+        document.addEventListener("DOMContentLoaded", function() {
+            // Check if Moengage object exists and its cards module is enabled
+            // This check is crucial to prevent "Cannot read properties of undefined (reading 'inboxOpened')"
+            // It waits for the SDK to be fully initialized.
+            if (typeof Moengage !== 'undefined' && Moengage.cards) {
+                Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
+                fetchAndRenderCards(); // Proceed to fetch and render cards
+            } else {
+                // If Moengage or Moengage.cards is not ready, log an error.
+                // The 'load' event listener for the SDK script itself should handle the primary initialization.
+                console.error("MoEngage SDK or 'cards' module not fully initialized. Please ensure the SDK script loaded successfully and 'cards: { enable: true }' is set in the initialization config.");
+            }
+        });
     </script>
 </body>
 </html>
