@@ -3,47 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notification Inbox</title>
+    <title>Notification & Cards Inbox</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom font for Inter - if not loaded by default by Tailwind */
+        /* Custom font for Inter */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6; /* Light gray background */
         }
-        /* Custom scrollbar for the notification list */
-        .notification-list::-webkit-scrollbar {
+        /* Custom scrollbar for the notification/card lists */
+        .scrollable-list::-webkit-scrollbar {
             width: 8px;
         }
-        .notification-list::-webkit-scrollbar-track {
+        .scrollable-list::-webkit-scrollbar-track {
             background: #e0e0e0;
             border-radius: 10px;
         }
-        .notification-list::-webkit-scrollbar-thumb {
+        .scrollable-list::-webkit-scrollbar-thumb {
             background: #a0a0a0;
             border-radius: 10px;
         }
-        .notification-list::-webkit-scrollbar-thumb:hover {
+        .scrollable-list::-webkit-scrollbar-thumb:hover {
             background: #808080;
         }
+        .tab-button.active {
+            border-bottom: 3px solid #3b82f6; /* Blue-500 */
+            color: #3b82f6; /* Blue-500 */
+        }
     </style>
-	<script type="text/javascript">
-	var moeDataCenter = "dc_1"; // Replace "DC" with the actual Data center value from the above table
-	var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // Replace "WorkspaceID" available in the settings page of MoEngage Dashboard.
-	var sdkVersion = "2"; // Replace this value with the version of Web SDK that you intend to use. It is recommended to use the format x (major)
-	      
-	!function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute","identifyUser","getUserIdentities"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){if(d)return e[a]=e.moe(d),e[a].initialised=e[a].initialised+1||1,!0}),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/versions/"+sdkVersion+"/moe_webSdk.min.latest.js","Moengage");
-	 
-	Moengage = moe({
-	  app_id: moeAppID,
-	  debug_logs: 1,
-         cards: {
-      enable: true
-    } 
-	});
-	</script>
+    <script type="text/javascript">
+        // MoEngage SDK Initialization
+        var moeDataCenter = "dc_1"; // Replace "DC" with the actual Data center value from the above table
+        var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // Replace "WorkspaceID" available in the settings page of MoEngage Dashboard.
+        var sdkVersion = "2"; // Replace this value with the version of Web SDK that you intend to use. It is recommended to use the format x (major)
+        
+        !function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute","identifyUser","getUserIdentities"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){if(d)return e[a]=e.moe(d),e[a].initialised=e[a].initialised+1||1,!0}),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/versions/"+sdkVersion+"/moe_webSdk.min.latest.js","Moengage");
+        
+        Moengage = moe({
+            app_id: moeAppID,
+            debug_logs: 1,
+            cards: {
+                enable: true
+            }
+        });
+    </script>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-100">
     <div class="w-full max-w-2xl bg-white shadow-xl rounded-xl overflow-hidden">
@@ -53,12 +58,22 @@
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                Notification Inbox
+                Inbox
             </h1>
         </div>
 
+        <!-- Tab Navigation -->
+        <div class="flex justify-around bg-gray-50 border-b border-gray-200">
+            <button id="notifications-tab" class="tab-button flex-1 py-3 text-lg font-medium text-gray-700 hover:text-blue-500 transition-colors duration-200 active">
+                Notifications
+            </button>
+            <button id="cards-tab" class="tab-button flex-1 py-3 text-lg font-medium text-gray-700 hover:text-blue-500 transition-colors duration-200">
+                Cards
+            </button>
+        </div>
+
         <!-- Notification List Container -->
-        <div class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto notification-list">
+        <div id="notifications-content" class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollable-list">
             <!-- Example Notification Item 1 (Unread) -->
             <div class="notification-item bg-blue-50 border-l-4 border-blue-500 rounded-lg p-4 mb-4 shadow-sm flex items-start space-x-4 transition-all duration-300 hover:shadow-md">
                 <div class="flex-shrink-0 mt-1">
@@ -170,6 +185,13 @@
             </div>
         </div>
 
+        <!-- Cards List Container -->
+        <div id="cards-content" class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollable-list hidden">
+            <div id="cards-loading" class="text-center text-gray-500 py-8">Loading cards...</div>
+            <div id="cards-empty" class="text-center text-gray-500 py-8 hidden">No cards available.</div>
+            <!-- Cards will be dynamically loaded here -->
+        </div>
+
         <!-- Footer (Optional) -->
         <div class="bg-gray-200 p-4 rounded-b-xl text-center text-gray-600 text-sm">
             You're all caught up!
@@ -178,57 +200,72 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Get all "Mark as Read" buttons
+            const notificationsTab = document.getElementById('notifications-tab');
+            const cardsTab = document.getElementById('cards-tab');
+            const notificationsContent = document.getElementById('notifications-content');
+            const cardsContent = document.getElementById('cards-content');
+            const cardsLoading = document.getElementById('cards-loading');
+            const cardsEmpty = document.getElementById('cards-empty');
+
+            // Function to switch tabs
+            function switchTab(activeTab) {
+                if (activeTab === 'notifications') {
+                    notificationsTab.classList.add('active');
+                    cardsTab.classList.remove('active');
+                    notificationsContent.classList.remove('hidden');
+                    cardsContent.classList.add('hidden');
+                } else {
+                    cardsTab.classList.add('active');
+                    notificationsTab.classList.remove('active');
+                    cardsContent.classList.remove('hidden');
+                    notificationsContent.classList.add('hidden');
+                    loadMoEngageCards(); // Load cards when the tab is switched to cards
+                }
+            }
+
+            // Event listeners for tab buttons
+            notificationsTab.addEventListener('click', () => switchTab('notifications'));
+            cardsTab.addEventListener('click', () => switchTab('cards'));
+
+            // Existing notification functionality
             const markAsReadButtons = document.querySelectorAll('.mark-as-read-btn');
-            // Get all "Delete" buttons
             const deleteButtons = document.querySelectorAll('.delete-btn');
 
-            // Add event listener to each "Mark as Read" button
             markAsReadButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     const notificationItem = event.target.closest('.notification-item');
                     if (notificationItem) {
-                        // Change background, border, text color to indicate read status
                         notificationItem.classList.remove('bg-blue-50', 'bg-green-50', 'bg-yellow-50', 'border-blue-500', 'border-green-500', 'border-yellow-500');
                         notificationItem.classList.add('bg-white', 'border-gray-300', 'opacity-80');
 
-                        // Update icon color to gray
                         const icon = notificationItem.querySelector('svg');
                         if (icon) {
                             icon.classList.remove('text-blue-600', 'text-green-600', 'text-yellow-600');
                             icon.classList.add('text-gray-500');
                         }
 
-                        // Update title and message color to gray
                         const title = notificationItem.querySelector('h3');
                         const message = notificationItem.querySelector('p');
                         if (title) title.classList.replace('text-gray-900', 'text-gray-700');
                         if (message) message.classList.replace('text-gray-700', 'text-gray-600');
 
-                        // Update timestamp color to gray
                         const timestamp = notificationItem.querySelector('span');
                         if (timestamp) timestamp.classList.replace('text-gray-500', 'text-gray-400');
 
-
-                        // Change button text and disable it
                         event.target.textContent = 'Read';
                         event.target.classList.remove('bg-blue-500', 'hover:bg-blue-600');
                         event.target.classList.add('bg-gray-400', 'cursor-not-allowed');
                         event.target.disabled = true;
 
-                        // In a real application, you would send an AJAX request here
-                        // to mark the notification as read on the server.
                         console.log('Notification marked as read!');
                     }
                 });
             });
 
-            // Add event listener to each "Delete" button
             deleteButtons.forEach(button => {
                 button.addEventListener('click', (event) => {
                     const notificationItem = event.target.closest('.notification-item');
                     if (notificationItem) {
-                        // Animate removal
                         notificationItem.style.opacity = '0';
                         notificationItem.style.transform = 'translateX(100%)';
                         notificationItem.style.height = '0';
@@ -237,16 +274,159 @@
                         notificationItem.style.paddingBottom = '0';
                         notificationItem.style.overflow = 'hidden';
 
-                        // Remove from DOM after animation
                         setTimeout(() => {
                             notificationItem.remove();
-                            // In a real application, you would send an AJAX request here
-                            // to delete the notification from the server.
                             console.log('Notification deleted!');
-                        }, 300); // Match CSS transition duration
+                        }, 300);
                     }
                 });
             });
+
+            // --- MoEngage Cards Integration ---
+
+            // Function to render a single card
+            function renderCard(card) {
+                const cardElement = document.createElement('div');
+                cardElement.classList.add('card-item', 'bg-white', 'rounded-lg', 'p-4', 'mb-4', 'shadow-md', 'flex', 'flex-col', 'space-y-3', 'transition-all', 'duration-300', 'hover:shadow-lg', 'cursor-pointer');
+                cardElement.dataset.cardId = card.cardId;
+                cardElement.dataset.campaignId = card.campaignId || ''; // Store campaignId if available
+
+                let imageUrl = '';
+                if (card.media && card.media.url) {
+                    imageUrl = `<img src="${card.media.url}" alt="${card.title || 'Card Image'}" class="w-full h-40 object-cover rounded-md mb-3">`;
+                } else {
+                    // Placeholder image if no media URL
+                    imageUrl = `<img src="https://placehold.co/600x200/cccccc/333333?text=No+Image" alt="Placeholder Image" class="w-full h-40 object-cover rounded-md mb-3">`;
+                }
+
+                cardElement.innerHTML = `
+                    ${imageUrl}
+                    <h3 class="text-xl font-semibold text-gray-900">${card.title || 'No Title'}</h3>
+                    <p class="text-gray-700 text-sm">${card.description || 'No description available.'}</p>
+                    <span class="text-xs text-gray-500">${new Date(card.updatedAt).toLocaleString()}</span>
+                    <div class="flex flex-wrap gap-2 mt-2">
+                        ${card.callToAction ? card.callToAction.map(cta => `
+                            <a href="${cta.url}" target="_blank" class="cta-button bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200" data-button-id="${cta.id}">
+                                ${cta.text}
+                            </a>
+                        `).join('') : ''}
+                    </div>
+                `;
+
+                // Add click listener for the entire card
+                cardElement.addEventListener('click', (event) => {
+                    const cardId = cardElement.dataset.cardId;
+                    const campaignId = cardElement.dataset.campaignId;
+                    console.log(`Card clicked: ${cardId}, Campaign ID: ${campaignId}`);
+                    if (typeof Moengage !== 'undefined' && Moengage.cards) {
+                        Moengage.cards.cardClicked(cardId, campaignId);
+                    }
+                });
+
+                // Add click listener for CTA buttons if they exist
+                const ctaButtons = cardElement.querySelectorAll('.cta-button');
+                ctaButtons.forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        event.stopPropagation(); // Prevent card click event from firing when CTA is clicked
+                        const cardId = cardElement.dataset.cardId;
+                        const campaignId = cardElement.dataset.campaignId;
+                        const buttonId = button.dataset.buttonId;
+                        console.log(`CTA button clicked: ${buttonId} on Card: ${cardId}, Campaign ID: ${campaignId}`);
+                        // MoEngage.cards.cardClicked is typically for the whole card,
+                        // but if MoEngage provides a specific API for CTA clicks, it would go here.
+                        // For now, we'll just log it.
+                    });
+                });
+
+                // Mark card as shown when it's rendered
+                if (typeof Moengage !== 'undefined' && Moengage.cards) {
+                    Moengage.cards.cardShown(card.cardId);
+                }
+
+                return cardElement;
+            }
+
+            // Function to load MoEngage Cards
+            async function loadMoEngageCards() {
+                cardsLoading.classList.remove('hidden');
+                cardsEmpty.classList.add('hidden');
+                cardsContent.innerHTML = ''; // Clear previous cards
+
+                if (typeof Moengage === 'undefined' || !Moengage.cards) {
+                    console.error("MoEngage SDK or Cards module not initialized.");
+                    cardsLoading.textContent = "MoEngage SDK not initialized. Please check your integration.";
+                    return;
+                }
+
+                try {
+                    // 1. Call inboxOpened() when the inbox is opened
+                    Moengage.cards.inboxOpened();
+                    console.log("Moengage.cards.inboxOpened() called.");
+
+                    // 2. Fetch latest cards
+                    await Moengage.cards.fetchCards();
+                    console.log("Moengage.cards.fetchCards() completed.");
+
+                    // 3. Get all categories (optional, for debugging/category display)
+                    // const categories = await Moengage.cards.getCardCategories();
+                    // console.log("Card Categories:", categories);
+
+                    // 4. Get cards for 'All' category
+                    const cards = await Moengage.cards.getCardsForCategory('All');
+                    console.log("Cards for 'All' category:", cards);
+
+                    if (cards && cards.length > 0) {
+                        cards.forEach(card => {
+                            cardsContent.appendChild(renderCard(card));
+                        });
+                        cardsLoading.classList.add('hidden');
+                    } else {
+                        cardsLoading.classList.add('hidden');
+                        cardsEmpty.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error("Error loading MoEngage Cards:", error);
+                    cardsLoading.textContent = "Error loading cards. Please try again later.";
+                    cardsLoading.classList.remove('hidden');
+                    cardsEmpty.classList.add('hidden');
+                }
+            }
+
+            // Listen for MOE_LIFECYCLE event for CARDS_INITIALIZED
+            window.addEventListener('MOE_LIFECYCLE', event => {
+                if (event.detail.name === 'CARDS_INITIALIZED') {
+                    console.log("MOE_LIFECYCLE: CARDS_INITIALIZED detected.");
+                    // If cards tab is already active, load them
+                    if (cardsTab.classList.contains('active')) {
+                        loadMoEngageCards();
+                    }
+                }
+            });
+
+            // Alternatively, use moengage.on_cards_loaded() promise
+            if (typeof Moengage !== 'undefined' && Moengage.on_cards_loaded) {
+                Moengage.on_cards_loaded().then(() => {
+                    console.log("Moengage.on_cards_loaded() resolved.");
+                    // If cards tab is already active, load them
+                    if (cardsTab.classList.contains('active')) {
+                        loadMoEngageCards();
+                    }
+                }).catch(error => {
+                    console.error("Moengage.on_cards_loaded() failed:", error);
+                });
+            } else {
+                console.warn("Moengage.on_cards_loaded() not available or Moengage not defined yet.");
+            }
+
+            // Initial load: If MoEngage is already initialized and cards are enabled,
+            // and the cards tab is active, load them immediately.
+            // This handles cases where the event might have fired before the DOMContentLoaded listener.
+            if (typeof Moengage !== 'undefined' && Moengage.cards && Moengage.cards.enable === true) {
+                // If the cards tab is the default active tab or if the user navigates there quickly
+                // and the SDK is already ready.
+                // For this template, notifications is default, so this won't fire immediately on page load.
+                // It will fire when the 'cards' tab is clicked.
+            }
         });
     </script>
 </body>
