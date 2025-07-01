@@ -42,7 +42,7 @@
                 e[a]=e.moe(d); 
                 e[a].initialised=e[a].initialised+1||1;
 
-                // --- MoEngage Initialization with Cards Enabled (MOVED HERE) ---
+                // --- MoEngage Initialization with Cards Enabled ---
                 // This block now executes ONLY after the SDK script is loaded.
                 Moengage = moe({
                     app_id: moeAppID, // Use the variable defined above
@@ -126,7 +126,7 @@
                     }
                 });
 
-                // --- IMPORTANT: User Identification (MOVED HERE) ---
+                // --- IMPORTANT: User Identification ---
                 // Replace "YOUR_UNIQUE_USER_ID" with an actual unique ID for the logged-in user.
                 // This is crucial for MoEngage to fetch personalized cards for this user.
                 // Example: If a user logs in, identify them with their internal user ID.
@@ -136,17 +136,21 @@
                 // Moengage.add_first_name("Test");
                 // Moengage.add_last_name("User");
 
-                // --- Call MoEngage Cards functions here (MOVED HERE) ---
-                // These calls are now guaranteed to execute after Moengage and its 'cards' module are ready.
-                if (typeof Moengage !== 'undefined' && Moengage.cards) {
-                    Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
-                    fetchAndRenderCards(); // Proceed to fetch and render cards
-                } else {
-                    console.error("MoEngage.cards module still not available after SDK load. This is unexpected. Please check MoEngage SDK version or contact support.");
-                    // Ensure messages are shown even if this unexpected error occurs
-                    document.getElementById('loading-message').classList.add('hidden');
-                    document.getElementById('error-message').classList.remove('hidden');
-                }
+                // --- Call MoEngage Cards functions here ---
+                // Adding a small timeout to give MoEngage SDK a tiny bit more time to ensure
+                // all internal modules (like 'cards') are fully exposed, especially in
+                // environments with strict loading sequences.
+                setTimeout(() => {
+                    if (typeof Moengage !== 'undefined' && Moengage.cards) {
+                        Moengage.cards.inboxOpened(); // Inform MoEngage that the inbox is opened
+                        fetchAndRenderCards(); // Proceed to fetch and render cards
+                    } else {
+                        console.error("MoEngage.cards module still not available after SDK load. This is unexpected. Please check MoEngage SDK version or contact support. Verify App ID, Data Center, and Domain Whitelisting in MoEngage dashboard.");
+                        // Ensure messages are shown even if this unexpected error occurs
+                        document.getElementById('loading-message').classList.add('hidden');
+                        document.getElementById('error-message').classList.remove('hidden');
+                    }
+                }, 100); // Small delay (e.g., 100ms)
                 return !0
             }
         }),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/moe_webSdk.min.latest.js","Moengage");
