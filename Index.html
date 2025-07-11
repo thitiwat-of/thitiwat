@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cards Inbox</title>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* Custom font for Inter */
@@ -57,7 +56,6 @@
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-100">
     <div class="w-full max-w-2xl bg-white shadow-xl rounded-xl overflow-hidden">
-        <!-- Header -->
         <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-t-xl">
             <h1 class="text-3xl font-bold text-white text-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -67,7 +65,6 @@
             </h1>
         </div>
 
-        <!-- Tab Navigation -->
         <div class="flex justify-around bg-gray-50 border-b border-gray-200">
             <button id="notifications-tab" class="tab-button flex-1 py-3 text-lg font-medium text-gray-700 hover:text-blue-500 transition-colors duration-200">
                 Notifications
@@ -77,19 +74,15 @@
             </button>
         </div>
 
-        <!-- Notification List Container (Hidden by default, no example items) -->
         <div id="notifications-content" class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollable-list hidden">
             <div class="text-center text-gray-500 py-8">No notifications available.</div>
         </div>
 
-        <!-- Cards List Container -->
         <div id="cards-content" class="p-4 sm:p-6 max-h-[70vh] overflow-y-auto scrollable-list">
             <div id="cards-loading" class="text-center text-gray-500 py-8">Loading cards...</div>
             <div id="cards-empty" class="text-center text-gray-500 py-8 hidden">No cards available.</div>
-            <!-- Cards will be dynamically loaded here -->
-        </div>
+            </div>
 
-        <!-- Footer (Optional) -->
         <div class="bg-gray-200 p-4 rounded-b-xl text-center text-gray-600 text-sm">
             You're all caught up!
         </div>
@@ -186,38 +179,46 @@
 
             // Function to render a single card
             function renderCard(card) {
-                console.log("Rendering card:", card); // Log the card object being rendered
+                console.log("Rendering card:", card); // Log the full card object for debugging
+
                 const cardElement = document.createElement('div');
                 cardElement.classList.add('card-item', 'bg-white', 'rounded-lg', 'p-4', 'mb-4', 'shadow-md', 'flex', 'flex-col', 'space-y-3', 'transition-all', 'duration-300', 'hover:shadow-lg', 'cursor-pointer');
-                cardElement.dataset.cardId = card.id; // Use card.id from the provided JSON
-                cardElement.dataset.campaignId = card.metaData ? card.metaData.moe_campaign_id : ''; // Use moe_campaign_id from metaData
+                cardElement.dataset.cardId = card.id;
+                cardElement.dataset.campaignId = card.metaData ? card.metaData.moe_campaign_id : '';
 
                 let title = 'No Title';
-                let description = 'No description available.';
+                let description = 'No description available.'; // This variable will store the message data
                 let ctaButtonsHtml = '';
-                let imageUrl = ''; // No image in the provided structure, so it will remain empty
+                let imageUrlHtml = ''; // Initialize for potential image display
 
                 // Extract content from templateData
                 if (card.templateData && card.templateData.containers && card.templateData.containers.length > 0) {
                     const container = card.templateData.containers[0];
 
-                    // Extract text widgets for title and description
+                    // Extract text widgets for title and description/message
                     const textWidgets = container.widgets.filter(widget => widget.type === 'text');
                     if (textWidgets.length > 0) {
-                        // Use innerHTML to handle potential HTML tags within the content
                         title = textWidgets[0].content || 'No Title';
+                        // The second text widget content is typically the main message/description
                         if (textWidgets.length > 1) {
                             description = textWidgets[1].content || 'No description available.';
+                            console.log("Extracted Message (Description):", description); // Log the extracted message
                         }
                     }
+
+                    // Extract image widget (if present)
+                    const imageWidget = container.widgets.find(widget => widget.type === 'image');
+                    if (imageWidget && imageWidget.content) {
+                        imageUrlHtml = `<img src="${imageWidget.content}" alt="Card Image" class="w-full h-48 object-cover rounded-md mb-2">`;
+                    }
+
 
                     // Extract actions for CTA buttons
                     if (container.actions && container.actions.length > 0) {
                         ctaButtonsHtml = container.actions.map((action, index) => {
-                            // Assuming 'navigate' action type with 'value' as URL and 'name' as text
                             const ctaText = action.name || 'Action ' + (index + 1);
                             const ctaUrl = action.value || '#';
-                            const ctaId = `cta-${index}`; // Simple ID for tracking
+                            const ctaId = `cta-${index}`;
                             return `
                                 <a href="${ctaUrl}" target="_blank" class="cta-button bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-md shadow-sm transition-colors duration-200" data-button-id="${ctaId}" data-action-type="${action.type}">
                                     ${ctaText}
@@ -231,10 +232,8 @@
                 const updatedAt = card.updatedAt ? new Date(card.updatedAt * 1000).toLocaleString() : 'N/A';
 
                 cardElement.innerHTML = `
-                    ${imageUrl} <!-- This will be empty as no image field is found in the sample -->
-                    <h3 class="text-xl font-semibold text-gray-900">${title}</h3>
-                    <p class="text-gray-700 text-sm">${description}</p>
-                    <span class="text-xs text-gray-500">${updatedAt}</span>
+                    ${imageUrlHtml} <h3 class="text-xl font-semibold text-gray-900">${title}</h3>
+                    <p class="text-gray-700 text-sm">${description}</p> <span class="text-xs text-gray-500">${updatedAt}</span>
                     <div class="flex flex-wrap gap-2 mt-2">
                         ${ctaButtonsHtml}
                     </div>
@@ -259,15 +258,12 @@
                         const campaignId = cardElement.dataset.campaignId;
                         const buttonId = button.dataset.buttonId;
                         console.log(`CTA button clicked: ${buttonId} on Card: ${cardId}, Campaign ID: ${campaignId}`);
-                        // MoEngage.cards.cardClicked is typically for the whole card,
-                        // but if MoEngage provides a specific API for CTA clicks, it would go here.
-                        // For now, we'll just log it.
                     });
                 });
 
                 // Mark card as shown when it's rendered
                 if (typeof Moengage !== 'undefined' && Moengage.cards) {
-                    Moengage.cards.cardShown(card.id); // Use card.id for cardShown
+                    Moengage.cards.cardShown(card.id);
                 }
 
                 return cardElement;
@@ -286,26 +282,21 @@
                 }
 
                 try {
-                    // 1. Call inboxOpened() when the inbox is opened
                     Moengage.cards.inboxOpened();
                     console.log("Moengage.cards.inboxOpened() called.");
 
-                    // 2. Fetch latest cards
                     await Moengage.cards.fetchCards();
                     console.log("Moengage.cards.fetchCards() completed.");
 
-                    // 3. Get all categories (optional, for debugging/category display)
                     const categories = await Moengage.cards.getCardCategories();
                     console.log("Card Categories:", categories);
 
-                    // 4. Get cards for 'All' category - this provides a list of cards, potentially with basic info
                     const initialCards = await Moengage.cards.getCardsForCategory('All');
                     console.log("Received initial cards for 'All' category (before getCardsInfo):", initialCards);
 
                     if (initialCards && initialCards.length > 0) {
                         const detailedCardsPromises = initialCards.map(card => {
-                            if (card.cardId) { // Check for card.cardId from the initial list
-                                // Fetch full details for each card using getCardsInfo
+                            if (card.cardId) {
                                 return Moengage.cards.getCardsInfo(card.cardId)
                                     .then(detailedCard => {
                                         console.log(`Fetched detailed info for card ${card.cardId}:`, detailedCard);
@@ -313,13 +304,12 @@
                                     })
                                     .catch(error => {
                                         console.error(`Error fetching detailed info for card ${card.cardId}:`, error);
-                                        return null; // Return null if fetching details fails for this card
+                                        return null;
                                     });
                             }
-                            return Promise.resolve(null); // Return null if cardId is missing from initial list
+                            return Promise.resolve(null);
                         });
 
-                        // Wait for all detailed card fetches to complete
                         const detailedCards = (await Promise.all(detailedCardsPromises)).filter(card => card !== null);
 
                         if (detailedCards.length > 0) {
@@ -349,7 +339,6 @@
             window.addEventListener('MOE_LIFECYCLE', event => {
                 if (event.detail.name === 'CARDS_INITIALIZED') {
                     console.log("MOE_LIFECYCLE: CARDS_INITIALIZED detected.");
-                    // If cards tab is already active, load them
                     if (cardsTab.classList.contains('active')) {
                         loadMoEngageCards();
                     }
@@ -360,7 +349,6 @@
             if (typeof Moengage !== 'undefined' && Moengage.on_cards_loaded) {
                 Moengage.on_cards_loaded().then(() => {
                     console.log("Moengage.on_cards_loaded() resolved.");
-                    // If cards tab is already active, load them
                     if (cardsTab.classList.contains('active')) {
                         loadMoEngageCards();
                     }
@@ -369,16 +357,6 @@
                 });
             } else {
                 console.warn("Moengage.on_cards_loaded() not available or Moengage not defined yet.");
-            }
-
-            // Initial load: If MoEngage is already initialized and cards are enabled,
-            // and the cards tab is active, load them immediately.
-            // This handles cases where the event might have fired before the DOMContentLoaded listener.
-            if (typeof Moengage !== 'undefined' && Moengage.cards && Moengage.cards.enable === true) {
-                // If the cards tab is the default active tab or if the user navigates there quickly
-                // and the SDK is already ready.
-                // For this template, notifications is default, so this won't fire immediately on page load.
-                // It will fire when the 'cards' tab is clicked.
             }
         });
     </script>
