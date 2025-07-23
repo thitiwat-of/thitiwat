@@ -33,25 +33,39 @@
         }
     </style>
     <script type="text/javascript">
-        // MoEngage SDK Initialization
-        var moeDataCenter = "dc_1"; // Replace "DC" with the actual Data center value from the above table
-        var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // Replace "WorkspaceID" available in the settings page of MoEngage Dashboard.
-        var sdkVersion = "2"; // Replace this value with the version of Web SDK that you intend to use. It is recommended to use the format x (major)
-        
-        !function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute","identifyUser","getUserIdentities"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){if(d)return e[a]=e.moe(d),e[a].initialised=e[a].initialised+1||1,!0}),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/versions/"+sdkVersion+"/moe_webSdk.min.latest.js","Moengage");
-        
-        Moengage = moe({
-            app_id: moeAppID,
-            debug_logs: 1,
-            cards: {
-                enable: true
+        // Function to get value from local storage (copied from the other Canvas document)
+        function getLocalStorageValue(key) {
+            const value = localStorage.getItem(key);
+            if (value === null) {
+                console.log(`Local storage item with key "${key}" not found.`);
+            } else {
+                console.log(`Value for key "${key}":`, value);
             }
-        });
+            return value;
+        }
 
-        // Note: The error "Web Push does not work in http mode" is an expected warning from the MoEngage SDK
-        // when running on an insecure (HTTP) connection. Web Push notifications require HTTPS.
-        // This error does NOT affect the functionality of the Cards campaign content.
-        console.warn("MoEngage Web Push: 'Web Push does not work in http mode' is an expected warning when running on HTTP. Web Push requires HTTPS. This does not affect Cards functionality.");
+        // Check if 'login' value in local storage is 'true'
+        const isLoggedIn = getLocalStorageValue('login') === 'true';
+
+        if (isLoggedIn) {
+            // MoEngage SDK Initialization
+            var moeDataCenter = "dc_1"; // Replace "DC" with the actual Data center value from the above table
+            var moeAppID = "32CIEEX5VX43302A2BQH85ND"; // Replace "WorkspaceID" available in the settings page of MoEngage Dashboard.
+            var sdkVersion = "2"; // Replace this value with the version of Web SDK that you intend to use. It is recommended to use the format x (major)
+            
+            !function(e,n,i,t,a,r,o,d){if(!moeDataCenter||!moeDataCenter.match(/^dc_[0-9]+$/gm))return console.error("Data center has not been passed correctly. Please follow the SDK installation instruction carefully.");var s=e[a]=e[a]||[];if(s.invoked=0,s.initialised>0||s.invoked>0)return console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1;e.moengage_object=a;var l={},g=function n(i){return function(){for(var n=arguments.length,t=Array(n),a=0;a<n;a++)t[a]=arguments[a];(e.moengage_q=e.moengage_q||[]).push({f:i,a:t})}},u=["track_event","add_user_attribute","add_first_name","add_last_name","add_email","add_mobile","add_user_name","add_gender","add_birthday","destroy_session","add_unique_user_id","update_unique_user_id","moe_events","call_web_push","track","location_type_attribute","identifyUser","getUserIdentities"],m={onsite:["getData","registerCallback"]};for(var c in u)l[u[c]]=g(u[c]);for(var v in m)for(var f in m[v])null==l[v]&&(l[v]={}),l[v][m[v][f]]=g(v+"."+m[v][f]);r=n.createElement(i),o=n.getElementsByTagName("head")[0],r.async=1,r.src=t,o.appendChild(r),e.moe=e.moe||function(){return(s.invoked=s.invoked+1,s.invoked>1)?(console.error("MoEngage Web SDK initialised multiple times. Please integrate the Web SDK only once!"),!1):(d=arguments.length<=0?void 0:arguments[0],l)},r.addEventListener("load",function(){if(d)return e[a]=e.moe(d),e[a].initialised=e[a].initialised+1||1,!0}),r.addEventListener("error",function(){return console.error("Moengage Web SDK loading failed."),!1})}(window,document,"script","https://cdn.moengage.com/release/"+moeDataCenter+"/versions/"+sdkVersion+"/moe_webSdk.min.latest.js","Moengage");
+            
+            Moengage = moe({
+                app_id: moeAppID,
+                debug_logs: 1,
+                cards: {
+                    enable: true
+                }
+            });
+            console.warn("MoEngage Web Push: 'Web Push does not work in http mode' is an expected warning when running on HTTP. Web Push requires HTTPS. This does not affect Cards functionality.");
+        } else {
+            console.log("MoEngage SDK not initialized because 'login' is not 'true' in local storage.");
+        }
     </script>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 sm:p-6 bg-gray-100">
@@ -109,7 +123,15 @@
                     notificationsTab.classList.remove('active');
                     cardsContent.classList.remove('hidden');
                     notificationsContent.classList.add('hidden');
-                    loadMoEngageCards(); // Load cards when the tab is switched to cards
+                    // Only load MoEngage cards if SDK was initialized
+                    if (typeof Moengage !== 'undefined' && Moengage.cards) {
+                        loadMoEngageCards(); 
+                    } else {
+                        console.warn("MoEngage SDK not available, cannot load cards.");
+                        cardsLoading.classList.add('hidden');
+                        cardsEmpty.classList.remove('hidden');
+                        cardsEmpty.textContent = "MoEngage Cards not available (user not logged in).";
+                    }
                 }
             }
 
@@ -275,9 +297,10 @@
                 cardsEmpty.classList.add('hidden');
                 cardsContent.innerHTML = ''; // Clear previous cards
 
+                // Check again if Moengage is defined before proceeding with card loading
                 if (typeof Moengage === 'undefined' || !Moengage.cards) {
-                    console.error("MoEngage SDK or Cards module not initialized.");
-                    cardsLoading.textContent = "MoEngage SDK not initialized. Please check your integration.";
+                    console.error("MoEngage SDK or Cards module not initialized. Cannot load cards.");
+                    cardsLoading.textContent = "MoEngage SDK not initialized. Cards functionality unavailable.";
                     return;
                 }
 
@@ -339,7 +362,8 @@
             window.addEventListener('MOE_LIFECYCLE', event => {
                 if (event.detail.name === 'CARDS_INITIALIZED') {
                     console.log("MOE_LIFECYCLE: CARDS_INITIALIZED detected.");
-                    if (cardsTab.classList.contains('active')) {
+                    // Only load cards if the 'Cards' tab is active AND the SDK was initialized
+                    if (cardsTab.classList.contains('active') && typeof Moengage !== 'undefined' && Moengage.cards) {
                         loadMoEngageCards();
                     }
                 }
@@ -349,7 +373,8 @@
             if (typeof Moengage !== 'undefined' && Moengage.on_cards_loaded) {
                 Moengage.on_cards_loaded().then(() => {
                     console.log("Moengage.on_cards_loaded() resolved.");
-                    if (cardsTab.classList.contains('active')) {
+                    // Only load cards if the 'Cards' tab is active AND the SDK was initialized
+                    if (cardsTab.classList.contains('active') && typeof Moengage !== 'undefined' && Moengage.cards) {
                         loadMoEngageCards();
                     }
                 }).catch(error => {
