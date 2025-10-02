@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ingestro Importer Case Study Sample</title>
+    <title>Ingestro Importer Adapted for Product Data</title>
     <script src="https://unpkg.com/@getnuvo/importer-vanilla-js"></script>
     <style>
         body {
@@ -14,7 +14,6 @@
             color: #333;
         }
         .importer {
-            /* Set a height for the importer component to render correctly */
             height: 80vh; 
             width: 100%;
             border: 1px solid #ccc;
@@ -32,12 +31,13 @@
 </head>
 <body>
 
-    <h1>Ingestro Importer Setup - Case Study</h1>
-    <p>This is a demonstration of the Importer SDK with the provided configuration.</p>
+    <h1>Ingestro Importer - Adapted Configuration</h1>
+    <p>This configuration is adapted for the **Company ID** and **Company Name** fields found in your attached data (e.g., 'Product Data' sheet).</p>
     
     <div class="bug-section">
-        <strong>⚠️ Note on the Bug:</strong> To reproduce the multi-sheet file bug you identified, you would need to add the following code block inside the <code>launchNuvoImporter</code> call (remove it for the working version):
+        <strong>Bug Note:</strong> The code below **excludes** the problematic `uploadStep` to ensure the multi-sheet file is correctly recognized as a single upload.
         <pre>
+// CODE THAT CAUSES THE BUG (EXCLUDED):
 stepHandler: {
     uploadStep: async ({ parsedData, rawData, updateData }) => {
         updateData(parsedData); 
@@ -52,40 +52,36 @@ stepHandler: {
         import { launchNuvoImporter } from "https://unpkg.com/@getnuvo/importer-vanilla-js@3.3.1/dist/index.esm.js";
 
         launchNuvoImporter(".importer", {
-            licenseKey: "Your License Key", // *** REPLACE WITH YOUR ACTUAL LICENSE KEY ***
+            licenseKey: "j6qRvDYNqWWyZ38n8r4kKTfvKscZautvJ4tO5ebQnU8=", // 
             settings: {
                 developerMode: true,
-                identifier: "product_data",
-                // Enables the importer to accept multiple sheets/files
-                multipleFileUpload: true, 
+                identifier: "company_product_data", // Updated identifier for clarity
+                multipleFileUpload: true, // Necessary for multi-sheet/multi-file processing
                 columns: [
                     {
-                        label: "Product ID",
-                        key: "product_id",
+                        // Mapped to 'Company ID' in the Product Data sheet
+                        label: "Company ID", 
+                        key: "company_id",
                         required: true,
                     },
                     {
-                        label: "Article Name",
-                        key: "article_name",
+                        // Mapped to 'Company Name' in the Product Data sheet
+                        label: "Company Name", 
+                        key: "company_name",
                         required: true,
                     },
                 ],
             },
             
-            // --- Handlers for Data Manipulation and Lifecycle ---
+            // --- Custom Hooks (Adapted to use new keys) ---
 
-            // ** (The customer's reported bug code is intentionally omitted here for a working flow) **
-            // To reproduce the bug, add the stepHandler here:
-            // stepHandler: {
-            //   uploadStep: async ({ parsedData, rawData, updateData }) => {
-            //     updateData(parsedData);
-            //   }
-            // },
-
-            // Custom logic applied after mapping but before validation/hooks
-            onEntryInit: (row, rowIndex) => {
-                // Example: Adds " on init" to the product_id upon initial load
-                return { product_id: { value: row.product_id + " on init" } };
+            // Custom transformation applied to a specific column's values 
+            columnHooks: {
+                // Now targeting 'company_name'
+                company_name: (values) => {
+                    // Prepends "#NU-" to every company name value
+                    return values.map(([item, index]) => [{ value: "#NU-" + item.value }, index]);
+                },
             },
 
             // Custom logic applied on change (e.g., user edits a cell)
@@ -93,25 +89,23 @@ stepHandler: {
                 return rows.map((row) => {
                     return {
                         data: {
-                            // Example: Adds " on change" to the product_id upon user change
-                            product_id: { value: row.data.product_id.value + " on change" },
+                            // Adds " on change" to the Company ID upon user change
+                            company_id: { value: row.data.company_id.value + " on change" },
                         },
                         rowIndex: row.rowIndex,
                     };
                 });
             },
             
-            // Custom transformation applied to a specific column's values 
-            columnHooks: {
-                article_name: (values) => {
-                    // Example: Prepends "#NU" to every article_name value
-                    return values.map(([item, index]) => [{ value: "#NU" + item.value }, index]);
-                },
+            // Custom logic applied after mapping but before validation/hooks
+            onEntryInit: (row, rowIndex) => {
+                // Adds " on init" to the Company ID upon initial load
+                return { company_id: { value: row.company_id + " on init" } };
             },
 
-            // Lifecycle Hooks
+            // --- Lifecycle Hooks ---
             onCancel: () => {
-                console.log("onCancel triggered: User closed the importer.");
+                console.log("onCancel triggered.");
             },
             onResults: (result, errors, complete, logs, block) => {
                 console.log("--- onResults Triggered ---");
@@ -119,9 +113,8 @@ stepHandler: {
                 console.log("Error rows:", errors);
                 console.log("Logs:", logs);
                 
-                // You must call complete() when your processing is finished
+                // Final step: call complete()
                 complete(); 
-                console.log("--- Data import completed successfully ---");
             },
         });
     </script>
