@@ -3,120 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ingestro Importer Adapted for Product Data</title>
-    <script src="https://unpkg.com/@getnuvo/importer-vanilla-js"></script>
+    <title>Simulation of Multi-Sheet File Bug</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        .importer {
-            height: 80vh; 
-            width: 100%;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-        .bug-section {
-            background-color: #ffe0b2;
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #CC0000; }
+        .explanation {
+            background-color: #fcebeb;
+            border-left: 5px solid #cc0000;
             padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            border-left: 5px solid #ff9800;
+            margin-top: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
         }
     </style>
 </head>
 <body>
 
-    <h1>Ingestro Importer - Adapted Configuration</h1>
-    <p>This configuration is adapted for the **Company ID** and **Company Name** fields found in your attached data (e.g., 'Product Data' sheet).</p>
-    
-    <div class="bug-section">
-        <strong>Bug Note:</strong> The code below **excludes** the problematic `uploadStep` to ensure the multi-sheet file is correctly recognized as a single upload.
-        <pre>
-// CODE THAT CAUSES THE BUG (EXCLUDED):
-stepHandler: {
-    uploadStep: async ({ parsedData, rawData, updateData }) => {
-        updateData(parsedData); 
-    }
-},</pre>
+    <h1>Simulation: Why the Bug Shows Multiple Files</h1>
+    <p>This script simulates the data passed from a 4-sheet Excel file (`parsedData`) through the custom <code>uploadStep</code> function and shows the resulting file state change.</p>
+
+    <div class="explanation">
+        <strong>Check your browser's Developer Console (F12)</strong> for the log output.
+        The simulation demonstrates that when an array of sheet objects is passed to <code>updateData()</code>, the system interprets each element of that array as a separate file, leading to the visual bug.
     </div>
 
-    <div class="importer"></div>
+    <script>
+        // --- 1. SIMULATE INPUT: Data received by the SDK's uploadStep ---
+        // This array represents the 4 sheets/files parsed from the single uploaded 'customer_file.xlsx'
+        const parsedDataFromExcel = [
+            { fileName: "customer_file.xlsx", sheetName: "Deal Data", data: [ ['row1'], ['row2'], ['row3'] ] },
+            { fileName: "customer_file.xlsx", sheetName: "Product Data", data: [ ['row1'], ['row2'] ] },
+            { fileName: "customer_file.xlsx", sheetName: "Address Data", data: [ ['row1'] ] },
+            { fileName: "customer_file.xlsx", sheetName: "General", data: [ [] ] }, // Simulate an empty row
+        ];
 
-    <script type="module">
-        // Import the launch function from the vanilla JS module
-        import { launchNuvoImporter } from "https://unpkg.com/@getnuvo/importer-vanilla-js@3.3.1/dist/index.esm.js";
+        // --- 2. SIMULATE THE BUGGED uploadStep FUNCTION ---
+        // This function contains the exact logic provided by the user.
+        const simulatedUploadStep = async (parsedData) => {
+            console.log("--- START: Simulated uploadStep execution ---");
+            console.log(`Original parsedData (4 sheets):`, parsedData);
 
-        launchNuvoImporter(".importer", {
-            licenseKey: "j6qRvDYNqWWyZ38n8r4kKTfvKscZautvJ4tO5ebQnU8=", // 
-            settings: {
-                developerMode: true,
-                identifier: "company_product_data", // Updated identifier for clarity
-                multipleFileUpload: true, // Necessary for multi-sheet/multi-file processing
-                columns: [
-                    {
-                        // Mapped to 'Company ID' in the Product Data sheet
-                        label: "Company ID", 
-                        key: "company_id",
-                        required: true,
-                    },
-                    {
-                        // Mapped to 'Company Name' in the Product Data sheet
-                        label: "Company Name", 
-                        key: "company_name",
-                        required: true,
-                    },
-                ],
-            },
+            // Step 1: Process the data (filter empty rows)
+            const processedData = parsedData.map((file) => ({
+                fileName: file.fileName,
+                sheetName: file.sheetName,
+                // The filter logic from the user's script
+                data: file.data.filter((row) => row.length > 0),
+            }));
+
+            console.log(`\nProcessed Data after filtering (Still 4 items):`, processedData);
+
+            // Step 2: Call updateData(processedData) - THIS IS THE BUG TRIGGER
+            // In the buggy SDK version, passing this array of 4 items causes the state transition.
+            simulatedUpdateData(processedData); 
+        };
+
+        // --- 3. SIMULATE THE SDK'S INTERNAL STATE CHANGE LOGIC ---
+        // This function models how the SDK interprets the data passed to it.
+        const simulatedUpdateData = (dataArray) => {
+            console.log("\n--- SIMULATED SDK STATE CHANGE ---");
             
-            // --- Custom Hooks (Adapted to use new keys) ---
-
-            // Custom transformation applied to a specific column's values 
-            columnHooks: {
-                // Now targeting 'company_name'
-                company_name: (values) => {
-                    // Prepends "#NU-" to every company name value
-                    return values.map(([item, index]) => [{ value: "#NU-" + item.value }, index]);
-                },
-            },
-
-            // Custom logic applied on change (e.g., user edits a cell)
-            onEntryChange: (rows, logs) => {
-                return rows.map((row) => {
-                    return {
-                        data: {
-                            // Adds " on change" to the Company ID upon user change
-                            company_id: { value: row.data.company_id.value + " on change" },
-                        },
-                        rowIndex: row.rowIndex,
-                    };
-                });
-            },
-            
-            // Custom logic applied after mapping but before validation/hooks
-            onEntryInit: (row, rowIndex) => {
-                // Adds " on init" to the Company ID upon initial load
-                return { company_id: { value: row.company_id + " on init" } };
-            },
-
-            // --- Lifecycle Hooks ---
-            onCancel: () => {
-                console.log("onCancel triggered.");
-            },
-            onResults: (result, errors, complete, logs, block) => {
-                console.log("--- onResults Triggered ---");
-                console.log("Final Result Data:", result);
-                console.log("Error rows:", errors);
-                console.log("Logs:", logs);
+            if (Array.isArray(dataArray) && dataArray.length > 1) {
+                // This condition is met when the customer passes the 4-sheet array.
                 
-                // Final step: call complete()
-                complete(); 
-            },
-        });
+                const fileNames = dataArray.map((item, index) => {
+                    // This demonstrates how the UI generates a file entry for each item in the array.
+                    return `File ${index + 1}: ${item.fileName} (Sheet: ${item.sheetName})`;
+                });
+
+                console.error("BUG TRIGGERED: The SDK interprets the array as multiple file uploads.");
+                console.log(`\nResulting Sidebar Entries (The Bug):`);
+                
+                // Show the final result that the user would see in the sidebar
+                fileNames.forEach(name => console.log(`- ${name}`));
+                console.log(`\n**Total Files Displayed in Sidebar: ${dataArray.length}**`);
+
+            } else {
+                console.log("CORRECT FLOW: System recognized a single file upload.");
+                console.log(`Resulting Sidebar Entries: 1 file entry.`);
+            }
+        };
+
+        // RUN THE SIMULATION
+        simulatedUploadStep(parsedDataFromExcel);
     </script>
 </body>
 </html>
